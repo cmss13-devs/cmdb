@@ -10,10 +10,12 @@ on:
     branches:
       - main
 
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    environment: deployment
 
     steps:
       - name: Checkout repo
