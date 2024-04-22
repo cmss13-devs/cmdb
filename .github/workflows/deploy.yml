@@ -11,7 +11,7 @@ on:
       - main
 
 env:
-  VITE_API_PATH: https://api.cm-ss13.com
+  VITE_API_PATH: https://db.cm-ss13.com/api
 
 jobs:
   build:
