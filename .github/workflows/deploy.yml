@@ -10,6 +10,8 @@ on:
     branches:
       - main
 
+env:
+  VITE_API_PATH: https://api.cm-ss13.com
 
 jobs:
   build:
