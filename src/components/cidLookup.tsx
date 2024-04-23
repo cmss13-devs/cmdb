@@ -60,11 +60,11 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
           updateCid();
         }}
       >
-        <label htmlFor="cid">CID: </label>
+        <label htmlFor="computer_id">CID: </label>
         <input
           type="text"
-          id="cid"
-          name="cid"
+          id="computer_id"
+          name="computer_id"
           value={cid}
           onInput={(event) => {
             const target = event.target as HTMLInputElement;
