@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   VITE_API_PATH: ${{ secrets.API_PATH }}
