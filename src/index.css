@@ -46,9 +46,9 @@
 }
 
 .toast {
-  visibility: hidden; 
+  visibility: hidden;
   min-width: 250px;
-  margin-left: -125px; 
+  margin-left: -125px;
   background-color: #333;
   color: #fff;
   text-align: center;
@@ -61,7 +61,7 @@
 }
 
 .toast.show {
-  visibility: visible; 
+  visibility: visible;
 
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
