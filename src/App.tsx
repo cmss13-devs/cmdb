@@ -6,7 +6,7 @@ export default function App() {
   const [userData, setUserData] = useState<Player | null>(null);
 
   return (
-    <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5">
+    <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
       <div className="flex flex-row justify-center">
         <div className="flex flex-col gap-3">
           <div className="text-3xl underline text-center">cmdb</div>
@@ -87,7 +87,7 @@ const UserModal = (props: { player: Player }) => {
 
       <UserDetailsModal player={player} />
 
-      <div className="flex flex-row mx-10">
+      <div className="flex flex-row">
         <div className="flex flex-col gap-3">
           <UserNotesModal player={player} />
           <UserJobBansModal player={player} />
@@ -209,7 +209,7 @@ const UserDetailsModal = (props: { player: Player }) => {
   } = player;
 
   return (
-    <div className="flex flex-row gap-3 justify-center">
+    <div className="flex flex-col items-center md:items-start md:flex-row gap-3 justify-center">
       <div className="flex flex-row gap-3">
         <div className="underline">
           <div>Last Seen:</div>
