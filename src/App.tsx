@@ -266,7 +266,7 @@ const UserNotesModal = (props: { player: Player }) => {
       <div className="text-2xl">Notes:</div>
       <div className="border-white border-2 p-3 flex flex-col gap-3  h-96 overflow-scroll">
         {notes?.map((note) => (
-          <UserNote note={note} />
+          <UserNote note={note} key={note.id} />
         ))}
         {!notes ||
           (!notes.length && (
@@ -359,7 +359,7 @@ const UserJobBansModal = (props: { player: Player }) => {
       <div className="text-2xl">Job Bans:</div>
       <div className="border-white border-2 p-3 flex flex-col gap-3">
         {jobBans?.map((jobBan) => (
-          <JobBan jobBan={jobBan} />
+          <JobBan jobBan={jobBan} key={jobBan.id} />
         ))}
         {!jobBans ||
           (!jobBans.length && (
