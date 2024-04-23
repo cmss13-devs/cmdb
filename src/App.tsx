@@ -81,7 +81,9 @@ const UserModal = (props: { player: Player }) => {
         <IsBannedModal player={player} />
       </div>
 
-      <PlayerActionsModal player={player} />
+      {import.meta.env.VITE_USE_ACTIONS && (
+        <PlayerActionsModal player={player} />
+      )}
 
       <UserDetailsModal player={player} />
 
