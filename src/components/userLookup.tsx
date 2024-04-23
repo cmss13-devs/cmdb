@@ -293,8 +293,8 @@ const UserDetailsModal = (props: { player: Player }) => {
         </div>
 
         <div>
-          <div>{byondAccountAge}</div>
-          <div>{firstJoinDate}</div>
+          <div>{byondAccountAge ?? "Unknown"}</div>
+          <div>{firstJoinDate ?? "Unknown"}</div>
           {discordId ? (
             <div
               className="text-blue-600 cursor-pointer"
