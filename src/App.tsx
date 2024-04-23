@@ -2,8 +2,26 @@ import { PropsWithChildren, useState } from "react";
 import "./App.css";
 
 export default function App() {
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<string | null>(null);
   const [userData, setUserData] = useState<Player | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const updateUser = () => {
+    setLoading(true);
+    fetch(`${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${user}`).then(
+      (value) =>
+        value.json().then((json) => {
+          setLoading(false);
+          if (json.status == 404) {
+            setErrorMessage("Failed to find user.");
+          } else {
+            setUserData(json);
+            setErrorMessage(null);
+          }
+        })
+    );
+  };
 
   return (
     <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
@@ -15,10 +33,7 @@ export default function App() {
             className="flex flex-row justify-center gap-3"
             onSubmit={(event) => {
               event.preventDefault();
-
-              fetch(
-                `${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${user}`
-              ).then((value) => value.json().then((json) => setUserData(json)));
+              updateUser();
             }}
           >
             <label htmlFor="ckey">User: </label>
@@ -33,6 +48,12 @@ export default function App() {
             ></input>
           </form>
 
+          {loading && <div className="text-xl text-center">Loading...</div>}
+          {errorMessage && (
+            <div className="red-alert-bg p-5">
+              <div className="foreground p-3 text-center">{errorMessage}</div>
+            </div>
+          )}
           {userData && <UserModal player={userData} />}
         </div>
       </div>
