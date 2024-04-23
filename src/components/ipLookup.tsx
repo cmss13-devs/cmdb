@@ -8,6 +8,7 @@ import { LookupMenu } from "./userLookup";
 import { Dialog } from "./dialog";
 import { GlobalContext } from "../types/global";
 import { LoginTriplet } from "../types/loginTriplet";
+import { DetailedCid } from "./detailedCid";
 
 interface IpLookupProps extends PropsWithChildren {
   initialIp?: string;
@@ -84,7 +85,7 @@ const IpData = (props: { triplets: LoginTriplet[] }) => {
       {props.triplets.map((triplet) => (
         <div key={triplet.id}>
           {triplet.loginDate}: <NameExpand name={triplet.ckey} /> -{" "}
-          {triplet.lastKnownCid}
+          <DetailedCid cid={triplet.lastKnownCid} />
         </div>
       ))}
     </div>

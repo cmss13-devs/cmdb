@@ -7,9 +7,8 @@ import {
 } from "react";
 import React from "react";
 import { GlobalContext } from "../types/global";
-import { Dialog } from "./dialog";
-import { IpLookup } from "./ipLookup";
-import { CidLookup } from "./cidLookup";
+import { DetailedCid } from "./detailedCid";
+import { DetailedIp } from "./detailedIp";
 
 type ActiveLookupType = {
   value: string;
@@ -311,46 +310,6 @@ const UserDetailsModal = (props: { player: Player }) => {
         </div>
       </div>
     </div>
-  );
-};
-
-const DetailedIp = (props: { ip: string }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <div
-        onClick={() => setOpen(true)}
-        className="cursor-pointer inline text-blue-600"
-      >
-        {props.ip}
-      </div>
-      {open && (
-        <Dialog open={open} toggle={() => setOpen(false)}>
-          <IpLookup initialIp={props.ip} />
-        </Dialog>
-      )}
-    </>
-  );
-};
-
-const DetailedCid = (props: { cid: string }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <div
-        onClick={() => setOpen(true)}
-        className="cursor-pointer inline text-blue-600"
-      >
-        {props.cid}
-      </div>
-      {open && (
-        <Dialog open={open} toggle={() => setOpen(false)}>
-          <CidLookup initialCid={props.cid} />
-        </Dialog>
-      )}
-    </>
   );
 };
 

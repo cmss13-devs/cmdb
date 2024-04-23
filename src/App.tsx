@@ -6,10 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { GlobalContext } from "./types/global";
 import { CidLookup } from "./components/cidLookup";
+import { RoundData } from "./components/roundData";
 
 export default function App() {
   const [toastMessage, showToastMessage] = useState<string | null>(null);
-
   const [option, setOption] = useState<string | null>(null);
 
   const displayToast = (string: string) => {
@@ -42,7 +42,7 @@ export default function App() {
             {!option && (
               <div className="flex flex-row gap-3">
                 <div
-                  className="border border-white p-3 cursor-pointer"
+                  className="border border-white p-3 cursor-pointer grow"
                   onClick={() => setOption("lookup")}
                 >
                   Lookup User
@@ -65,6 +65,7 @@ export default function App() {
             {option === "lookup" && <LookupMenu />}
             {option === "ip" && <IpLookup />}
             {option === "cid" && <CidLookup />}
+            {!option && <RoundData />}
           </div>
         </div>
         <div className={`toast ${toastMessage ? "show" : ""}`}>
