@@ -1,63 +1,102 @@
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState } from "react";
 import "./App.css";
+
+type ActiveLookupType = {
+  value: string;
+  updateUser: (string?: string) => void;
+};
+
+const ActiveLookupContext = createContext<ActiveLookupType | null>(null);
+
+type ToastType = {
+  updateAndShow: (string: string) => void;
+};
+
+const ToastContext = createContext<ToastType | null>(null);
 
 export default function App() {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<string>("");
   const [userData, setUserData] = useState<Player | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [toastMessage, showToastMessage] = useState<string | null>(null);
 
-  const updateUser = () => {
+  const displayToast = (string: string) => {
+    showToastMessage(string);
+    setTimeout(() => {
+      showToastMessage("");
+    }, 3000);
+  };
+
+  const updateUser = (override?: string) => {
     setLoading(true);
-    fetch(`${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${user}`).then(
-      (value) =>
-        value.json().then((json) => {
-          setLoading(false);
-          if (json.status == 404) {
-            setErrorMessage("Failed to find user.");
-          } else {
-            setUserData(json);
-            setErrorMessage(null);
-          }
-        })
+    if (override) {
+      setUser(override);
+    }
+    fetch(
+      `${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${
+        override ? override : user
+      }`
+    ).then((value) =>
+      value.json().then((json) => {
+        setLoading(false);
+        if (json.status == 404) {
+          setErrorMessage("Failed to find user.");
+        } else {
+          setUserData(json);
+          setErrorMessage(null);
+        }
+      })
     );
   };
 
   return (
-    <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
-      <div className="flex flex-row justify-center">
-        <div className="flex flex-col gap-3">
-          <div className="text-3xl underline text-center">cmdb</div>
+    <ActiveLookupContext.Provider
+      value={{ value: user, updateUser: updateUser }}
+    >
+      <ToastContext.Provider value={{ updateAndShow: displayToast }}>
+        <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
+          <div className="flex flex-row justify-center">
+            <div className="flex flex-col gap-3">
+              <div className="text-3xl underline text-center">cmdb</div>
 
-          <form
-            className="flex flex-row justify-center gap-3"
-            onSubmit={(event) => {
-              event.preventDefault();
-              updateUser();
-            }}
-          >
-            <label htmlFor="ckey">User: </label>
-            <input
-              type="text"
-              id="ckey"
-              name="ckey"
-              onInput={(event) => {
-                const target = event.target as HTMLInputElement;
-                setUser(target.value);
-              }}
-            ></input>
-          </form>
+              <form
+                className="flex flex-row justify-center gap-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  updateUser();
+                }}
+              >
+                <label htmlFor="ckey">User: </label>
+                <input
+                  type="text"
+                  id="ckey"
+                  name="ckey"
+                  value={user}
+                  onInput={(event) => {
+                    const target = event.target as HTMLInputElement;
+                    setUser(target.value);
+                  }}
+                ></input>
+              </form>
 
-          {loading && <div className="text-xl text-center">Loading...</div>}
-          {errorMessage && (
-            <div className="red-alert-bg p-5">
-              <div className="foreground p-3 text-center">{errorMessage}</div>
+              {loading && <div className="text-xl text-center">Loading...</div>}
+              {errorMessage && (
+                <div className="red-alert-bg p-5">
+                  <div className="foreground p-3 text-center">
+                    {errorMessage}
+                  </div>
+                </div>
+              )}
+              {userData && <UserModal player={userData} />}
             </div>
-          )}
-          {userData && <UserModal player={userData} />}
+          </div>
+          <div className={`toast ${toastMessage ? "show" : ""}`}>
+            {toastMessage}
+          </div>
         </div>
-      </div>
-    </div>
+      </ToastContext.Provider>
+    </ActiveLookupContext.Provider>
   );
 }
 
@@ -87,6 +126,7 @@ interface Player {
   jobBans?: PlayerJobBan[];
   permabanAdminCkey?: string;
   timeBanAdminCkey?: string;
+  discordId?: number;
 }
 
 const UserModal = (props: { player: Player }) => {
@@ -109,7 +149,7 @@ const UserModal = (props: { player: Player }) => {
       <UserDetailsModal player={player} />
 
       <div className="flex flex-row">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 grow">
           <UserNotesModal player={player} />
           <UserJobBansModal player={player} />
         </div>
@@ -226,8 +266,10 @@ const UserDetailsModal = (props: { player: Player }) => {
     lastKnownIp,
     byondAccountAge,
     firstJoinDate,
-    discordLinkId,
+    discordId,
   } = player;
+
+  const toast = useContext(ToastContext);
 
   return (
     <div className="flex flex-col items-center md:items-start md:flex-row gap-3 justify-center">
@@ -255,7 +297,19 @@ const UserDetailsModal = (props: { player: Player }) => {
         <div>
           <div>{byondAccountAge}</div>
           <div>{firstJoinDate}</div>
-          <div>{discordLinkId ?? "Not Linked"}</div>
+          {discordId ? (
+            <div
+              className="text-blue-600 cursor-pointer"
+              onClick={() => {
+                toast?.updateAndShow("Copied to clipboard.");
+                navigator.clipboard.writeText(`${discordId}`);
+              }}
+            >
+              {discordId}
+            </div>
+          ) : (
+            <div>Not Linked</div>
+          )}
         </div>
       </div>
     </div>
@@ -285,7 +339,7 @@ const UserNotesModal = (props: { player: Player }) => {
   return (
     <div className="flex flex-col">
       <div className="text-2xl">Notes:</div>
-      <div className="border-white border-2 p-3 flex flex-col gap-3  h-96 overflow-scroll">
+      <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-scroll">
         {notes?.map((note) => (
           <UserNote note={note} key={note.id} />
         ))}
@@ -343,7 +397,7 @@ const UserNote = (props: { note: PlayerNote }) => {
         {text}
       </div>
       <div className="italic flex flex-row justify-end">
-        by {notingAdminCkey} ({adminRank}){" "}
+        by <RichUser name={notingAdminCkey} /> ({adminRank}){" "}
         {isConfidential && "[CONFIDENTIALLY]"} on {date}
       </div>
     </div>
@@ -402,6 +456,23 @@ const JobBan = (props: { jobBan: PlayerJobBan }) => {
       <div className="flex flex-row justify-end italic">
         by {banningAdminCkey} on {date}
       </div>
+    </div>
+  );
+};
+
+interface RichUserProps extends PropsWithChildren {
+  name?: string;
+}
+
+const RichUser = (props: RichUserProps) => {
+  const lookup = useContext(ActiveLookupContext);
+
+  return (
+    <div
+      onClick={() => lookup?.updateUser(props.name)}
+      className="cursor-pointer text-blue-600 px-1"
+    >
+      {props.name}
     </div>
   );
 };
