@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dialog } from "./dialog";
 import { IpLookup } from "./ipLookup";
+import { Link } from "./link";
 
 type DetailedIpProps = {
   ip: string;
@@ -13,12 +14,9 @@ export const DetailedIp: React.FC<DetailedIpProps> = (
 
   return (
     <>
-      <div
-        onClick={() => setOpen(true)}
-        className="cursor-pointer inline text-blue-600"
-      >
+      <Link onClick={() => setOpen(true)} className="inline">
         {props.ip}
-      </div>
+      </Link>
       {open && (
         <Dialog open={open} toggle={() => setOpen(false)}>
           <IpLookup initialIp={props.ip} />

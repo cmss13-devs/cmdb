@@ -10,6 +10,7 @@ import { ConnectionHistory } from "../types/loginTriplet";
 
 interface IpLookupProps extends PropsWithChildren {
   initialIp?: string;
+  close?: () => void;
 }
 
 export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
@@ -42,6 +43,7 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
         setLoading(false);
         if (json.status == 404) {
           global?.updateAndShowToast("No connections by IP.");
+          if (props.close) props.close();
         } else {
           setIpData(json);
         }

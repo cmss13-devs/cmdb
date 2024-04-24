@@ -21,7 +21,9 @@ export const Dialog: React.FC<DialogPropsType> = (props: DialogPropsType) => {
       <dialog
         {...rest}
         open={open}
-        className={`w-full md:w-1/2 py-10 border border-themed foreground z-20 px-10 ${className} min-w-[600px]`}
+        className={`w-full md:w-1/2 py-10 border border-themed foreground z-20 px-10 ${
+          className ?? ""
+        } md:min-w-[600px]`}
         style={{
           position: "fixed",
           top: "50%",

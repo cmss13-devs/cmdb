@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Dialog } from "./dialog";
 import { LookupMenu } from "./userLookup";
+import { Link } from "./link";
 
 interface NameExpandProps {
   name: string;
@@ -13,15 +14,12 @@ export const NameExpand: React.FC<NameExpandProps> = (
 
   return (
     <>
-      <div
-        onClick={() => setOpen(true)}
-        className="cursor-pointer text-blue-600 inline"
-      >
+      <Link onClick={() => setOpen(true)} className="inline">
         {props.name}
-      </div>
+      </Link>
       {open && (
-        <Dialog open={open} toggle={() => setOpen(false)} className="md:w-3/4">
-          <LookupMenu initialUser={props.name} />
+        <Dialog open={open} toggle={() => setOpen(false)} className="md:w-5/6">
+          <LookupMenu value={props.name} />
         </Dialog>
       )}
     </>

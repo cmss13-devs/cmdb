@@ -68,12 +68,12 @@ export const RoundData: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-center mt-20 gap-2">
-      <div className="flex flex-row justify-center gap-3">
+      <div className="flex flex-col md:flex-row justify-center gap-3">
         <InfoBox label="Round ID">{roundData.round_id}</InfoBox>
         <InfoBox label="Players">{roundData.players}</InfoBox>
         <InfoBox label="Admins">{roundData.admins}</InfoBox>
       </div>
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-col md:flex-row gap-3">
         <InfoBox label="Map Name">{roundData.map_name}</InfoBox>
         <InfoBox label="Game State">
           {formatGameState(roundData.gamestate)}

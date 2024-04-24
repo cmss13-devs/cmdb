@@ -10,6 +10,7 @@ import { TripletList } from "./tripletsList";
 
 interface CidLookupProps extends PropsWithChildren {
   initialCid?: string;
+  close?: () => void;
 }
 
 export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
@@ -42,6 +43,7 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
         setLoading(false);
         if (json.status == 404) {
           global?.updateAndShowToast("No connections by CID.");
+          if (props.close) close;
         } else {
           setCidData(json);
         }

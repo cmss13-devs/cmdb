@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { PropsWithChildren, useRef, useState } from "react";
 import "./App.css";
 import { LookupMenu } from "./components/userLookup";
 import { IpLookup } from "./components/ipLookup";
@@ -7,6 +7,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { GlobalContext } from "./types/global";
 import { CidLookup } from "./components/cidLookup";
 import { RoundData } from "./components/roundData";
+import { Dialog } from "./components/dialog";
 
 export default function App() {
   const [toastMessage, showToastMessage] = useState<string | null>(null);
@@ -22,50 +23,17 @@ export default function App() {
   return (
     <GlobalContext.Provider value={{ updateAndShowToast: displayToast }}>
       <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
-        <div className="flex flex-row justify-center">
+        <div className="md:flex flex-row justify-center">
           <div className="flex flex-col gap-3">
             <div className="text-3xl underline text-center">cmdb</div>
-            {option && (
-              <div className="flex flex-row justify-center">
-                <div
-                  className="flex flex-row justify-center gap-1 border-white border cursor-pointer w-20"
-                  onClick={() => setOption(null)}
-                >
-                  <div className="flex flex-col justify-center">
-                    <FontAwesomeIcon icon={faXmark} />
-                  </div>
-                  Exit
-                </div>
-              </div>
-            )}
 
-            {!option && (
-              <div className="flex flex-row gap-3">
-                <div
-                  className="border border-white p-3 cursor-pointer grow"
-                  onClick={() => setOption("lookup")}
-                >
-                  Lookup User
-                </div>
-                <div
-                  className="border border-white p-3 cursor-pointer"
-                  onClick={() => setOption("ip")}
-                >
-                  Lookup IP
-                </div>
-                <div
-                  className="border border-white p-3 cursor-pointer"
-                  onClick={() => setOption("cid")}
-                >
-                  Lookup CID
-                </div>
-              </div>
-            )}
+            <div className="flex flex-col md:flex-row gap-3">
+              <LookupOption type="lookup">Lookup User</LookupOption>
+              <LookupOption type="ip">Lookup IP</LookupOption>
+              <LookupOption type="cid">Lookup CID</LookupOption>
+            </div>
 
-            {option === "lookup" && <LookupMenu />}
-            {option === "ip" && <IpLookup />}
-            {option === "cid" && <CidLookup />}
-            {!option && <RoundData />}
+            <RoundData />
           </div>
         </div>
         <div className={`toast ${toastMessage ? "show" : ""}`}>
@@ -75,3 +43,79 @@ export default function App() {
     </GlobalContext.Provider>
   );
 }
+
+interface LookupProps extends PropsWithChildren {
+  type: "lookup" | "ip" | "cid";
+}
+
+const LookupOption = (props: LookupProps) => {
+  const [selected, setSelected] = useState(false);
+  const [value, setValue] = useState<string | null>(null);
+  const [heldValue, setHeldValue] = useState<string | null>(null);
+
+  const [timer, setTimer] = useState<number>(0);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { type } = props;
+
+  const close = () => setValue(null);
+
+  return (
+    <>
+      <div
+        className="border border-white p-3 cursor-pointer grow"
+        onClick={() => {
+          setSelected(true);
+          clearTimeout(timer);
+          const timeout = setTimeout(() => {
+            setSelected(false);
+          }, 3000);
+          setTimeout(() => {
+            inputRef.current?.focus();
+          }, 1);
+          setTimer(timeout);
+        }}
+      >
+        {selected && (
+          <form
+            className="flex flex-row justify-center gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setValue(heldValue);
+            }}
+          >
+            <input
+              type="text"
+              value={heldValue ?? ""}
+              ref={inputRef}
+              onInput={(event) => {
+                const target = event.target as HTMLInputElement;
+                setHeldValue(target.value);
+                console.log(`clearing ${timer}`);
+                clearTimeout(timer);
+                setTimer(
+                  setTimeout(() => {
+                    setSelected(false);
+                  }, 10000)
+                );
+              }}
+            ></input>
+          </form>
+        )}
+        {!selected && props.children}
+      </div>
+      {value && (
+        <Dialog
+          open={!!value}
+          toggle={() => setValue(null)}
+          className="md:w-11/12 md:h-11/12"
+        >
+          {type == "lookup" && <LookupMenu value={value} close={close} />}
+          {type == "cid" && <CidLookup initialCid={value} close={close} />}
+          {type == "ip" && <IpLookup initialIp={value} close={close} />}
+        </Dialog>
+      )}
+    </>
+  );
+};

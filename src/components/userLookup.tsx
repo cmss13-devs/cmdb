@@ -12,6 +12,7 @@ import { DetailedIp } from "./detailedIp";
 import { ConnectionHistory } from "../types/loginTriplet";
 import { Dialog } from "./dialog";
 import { TripletList } from "./tripletsList";
+import { Link } from "./link";
 
 type ActiveLookupType = {
   value: string;
@@ -21,13 +22,14 @@ type ActiveLookupType = {
 const ActiveLookupContext = createContext<ActiveLookupType | null>(null);
 
 interface LookupMenuProps extends PropsWithChildren {
-  initialUser?: string;
+  value?: string;
+  close?: () => void;
 }
 
 export const LookupMenu: React.FC<LookupMenuProps> = (
   props: LookupMenuProps
 ) => {
-  const { initialUser } = props;
+  const { value } = props;
 
   const [user, setUser] = useState<string>("");
   const [userData, setUserData] = useState<Player | null>(null);
@@ -37,8 +39,8 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const global = useContext(GlobalContext);
 
   useEffect(() => {
-    if (initialUser && !userData) {
-      updateUser(initialUser);
+    if (value && !userData) {
+      updateUser(value);
     }
   });
 
@@ -56,6 +58,9 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
         setLoading(false);
         if (json.status == 404) {
           global?.updateAndShowToast("Failed to find user.");
+          if (props.close) {
+            props.close();
+          }
         } else {
           setUserData(json);
         }
@@ -67,7 +72,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
     <ActiveLookupContext.Provider
       value={{ value: user, updateUser: updateUser }}
     >
-      {!initialUser && (
+      {!value && (
         <form
           className="flex flex-row justify-center gap-3"
           onSubmit={(event) => {
@@ -299,15 +304,14 @@ const UserDetailsModal = (props: { player: Player }) => {
           <div>{byondAccountAge ?? "Unknown"}</div>
           <div>{firstJoinDate ?? "Unknown"}</div>
           {discordId ? (
-            <div
-              className="text-blue-600 cursor-pointer"
+            <Link
               onClick={() => {
                 global?.updateAndShowToast("Copied to clipboard.");
                 navigator.clipboard.writeText(`${discordId}`);
               }}
             >
               {discordId}
-            </div>
+            </Link>
           ) : (
             <div>Not Linked</div>
           )}
@@ -345,12 +349,7 @@ const ConnectionType = (props: {
 
   return (
     <>
-      <div
-        className="cursor-pointer text-blue-600"
-        onClick={() => setOpen(true)}
-      >
-        {label}
-      </div>
+      <Link onClick={() => setOpen(true)}>{label}</Link>
       {open && (
         <Dialog open={open} toggle={() => setOpen(false)}>
           <ConnectionTypeDetails path={path} value={value} />
@@ -412,12 +411,7 @@ const Expand = (props: { label: string; value: string }) => {
 
   return (
     <>
-      <div
-        onClick={() => setOpen(true)}
-        className="text-blue-600 cursor-pointer"
-      >
-        {props.label}
-      </div>
+      <Link onClick={() => setOpen(true)}>{props.label}</Link>
       {open && (
         <Dialog open={open} toggle={() => setOpen(false)}>
           <div className="pt-10">{props.value}</div>
@@ -503,7 +497,7 @@ const UserNote = (props: { note: PlayerNote }) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row gap-1">
+      <div className="flex flex-col md:flex-row gap-1">
         {tag}
         {text}
       </div>
@@ -579,11 +573,8 @@ const RichUser = (props: RichUserProps) => {
   const lookup = useContext(ActiveLookupContext);
 
   return (
-    <div
-      onClick={() => lookup?.updateUser(props.name)}
-      className="cursor-pointer text-blue-600 px-1"
-    >
+    <Link onClick={() => lookup?.updateUser(props.name)} className="px-1">
       {props.name}
-    </div>
+    </Link>
   );
 };
