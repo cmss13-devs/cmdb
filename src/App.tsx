@@ -2,8 +2,6 @@ import { PropsWithChildren, useRef, useState } from "react";
 import "./App.css";
 import { LookupMenu } from "./components/userLookup";
 import { IpLookup } from "./components/ipLookup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { GlobalContext } from "./types/global";
 import { CidLookup } from "./components/cidLookup";
 import { RoundData } from "./components/roundData";
@@ -11,7 +9,6 @@ import { Dialog } from "./components/dialog";
 
 export default function App() {
   const [toastMessage, showToastMessage] = useState<string | null>(null);
-  const [option, setOption] = useState<string | null>(null);
 
   const displayToast = (string: string) => {
     showToastMessage(string);
@@ -52,12 +49,11 @@ const LookupOption = (props: LookupProps) => {
   const [selected, setSelected] = useState(false);
   const [value, setValue] = useState<string | null>(null);
   const [heldValue, setHeldValue] = useState<string | null>(null);
-
   const [timer, setTimer] = useState<number>(0);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const { type } = props;
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const close = () => setValue(null);
 
