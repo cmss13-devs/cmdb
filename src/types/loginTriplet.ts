@@ -8,3 +8,11 @@ export type LoginTriplet = {
   lastKnownCid: string;
   loginDate: string;
 };
+
+
+export type ConnectionHistory = {
+  triplets?: LoginTriplet[],
+  allCkeys: string[],
+  allCids: string[],
+  allIps: string[]
+}

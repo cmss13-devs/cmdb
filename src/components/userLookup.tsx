@@ -9,6 +9,9 @@ import React from "react";
 import { GlobalContext } from "../types/global";
 import { DetailedCid } from "./detailedCid";
 import { DetailedIp } from "./detailedIp";
+import { ConnectionHistory } from "../types/loginTriplet";
+import { Dialog } from "./dialog";
+import { TripletList } from "./tripletsList";
 
 type ActiveLookupType = {
   value: string;
@@ -260,6 +263,7 @@ const UserDetailsModal = (props: { player: Player }) => {
     byondAccountAge,
     firstJoinDate,
     discordId,
+    ckey,
   } = player;
 
   const global = useContext(GlobalContext);
@@ -309,7 +313,117 @@ const UserDetailsModal = (props: { player: Player }) => {
           )}
         </div>
       </div>
+      <div className="flex flex-col">
+        <ConnectionType
+          label={"View Full Connection History"}
+          path={"/Connections/Ckey?ckey="}
+          value={ckey}
+        />
+        <ConnectionType
+          label={"View Full Connections By All CIDs"}
+          path={"/Connections/FullByAllCid?ckey="}
+          value={ckey}
+        />
+        <ConnectionType
+          label={"View Full Connections By All IPs"}
+          path={"/Connections/FullByAllIps?ckey="}
+          value={ckey}
+        />
+      </div>
     </div>
+  );
+};
+
+const ConnectionType = (props: {
+  label: string;
+  path: string;
+  value: string;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const { path, value, label } = props;
+
+  return (
+    <>
+      <div
+        className="cursor-pointer text-blue-600"
+        onClick={() => setOpen(true)}
+      >
+        {label}
+      </div>
+      {open && (
+        <Dialog open={open} toggle={() => setOpen(false)}>
+          <ConnectionTypeDetails path={path} value={value} />
+        </Dialog>
+      )}
+    </>
+  );
+};
+
+const ConnectionTypeDetails = (props: {
+  path: string;
+  value: string;
+  viewCkeys?: boolean;
+  viewCids?: boolean;
+  viewIps?: boolean;
+}) => {
+  const [connectionData, setConnectionData] =
+    useState<ConnectionHistory | null>(null);
+
+  const { path, value } = props;
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_PATH}${path}${value}`).then((value) =>
+      value.json().then((json) => setConnectionData(json))
+    );
+  });
+
+  if (!connectionData) {
+    return <div className="text-center">Loading...</div>;
+  }
+
+  return (
+    <div className="flex flex-col">
+      <div className="flex flex-row justify-center gap-1">
+        <Expand
+          label={"View All CKEYs"}
+          value={connectionData.allCkeys.join(", ")}
+        />
+        -
+        <Expand
+          label={"View All CIDs"}
+          value={connectionData.allCids.join(", ")}
+        />
+        -
+        <Expand
+          label={"View All IPs"}
+          value={connectionData.allIps.join(", ")}
+        />
+      </div>
+      {connectionData.triplets && (
+        <TripletList triplets={connectionData.triplets} />
+      )}
+    </div>
+  );
+};
+
+const Expand = (props: { label: string; value: string }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <div
+        onClick={() => setOpen(true)}
+        className="text-blue-600 cursor-pointer"
+      >
+        {props.label}
+      </div>
+      {open && (
+        <Dialog open={open} toggle={() => setOpen(false)}>
+          <div className="pt-10">{props.value}</div>
+        </Dialog>
+      )}
+    </>
   );
 };
 

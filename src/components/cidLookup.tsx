@@ -4,11 +4,9 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { LookupMenu } from "./userLookup";
-import { Dialog } from "./dialog";
 import { GlobalContext } from "../types/global";
-import { LoginTriplet } from "../types/loginTriplet";
-import { DetailedIp } from "./detailedIp";
+import { ConnectionHistory } from "../types/loginTriplet";
+import { TripletList } from "./tripletsList";
 
 interface CidLookupProps extends PropsWithChildren {
   initialCid?: string;
@@ -18,7 +16,7 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
   const { initialCid } = props;
 
   const [cid, setCid] = useState<string>("");
-  const [ipData, setCidData] = useState<LoginTriplet[] | null>(null);
+  const [ipData, setCidData] = useState<ConnectionHistory | null>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -73,43 +71,8 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
         ></input>
       </form>
 
-      {loading && <div className="text-2xl">Loading...</div>}
-      {ipData && <CidData triplets={ipData} />}
-    </>
-  );
-};
-
-const CidData = (props: { triplets: LoginTriplet[] }) => {
-  return (
-    <div className="flex flex-col border-white border p-5 m-3 gap-1 max-h-[800px] overflow-scroll">
-      {props.triplets.map((triplet) => (
-        <div key={triplet.id}>
-          {triplet.loginDate}: <NameExpand name={triplet.ckey} /> -{" "}
-          <DetailedIp
-            ip={`${triplet.ip1}.${triplet.ip2}.${triplet.ip3}.${triplet.ip4}`}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const NameExpand = (props: { name: string }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <div
-        onClick={() => setOpen(true)}
-        className="cursor-pointer text-blue-600 inline"
-      >
-        {props.name}
-      </div>
-      {open && (
-        <Dialog open={open} toggle={() => setOpen(false)} className="md:w-3/4">
-          <LookupMenu initialUser={props.name} />
-        </Dialog>
-      )}
+      {loading && <div className="text-2xl text-center">Loading...</div>}
+      {ipData?.triplets && <TripletList triplets={ipData.triplets} />}
     </>
   );
 };
