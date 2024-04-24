@@ -1,4 +1,4 @@
-import { PropsWithChildren, useRef, useState } from "react";
+import React, { PropsWithChildren, useRef, useState } from "react";
 import "./App.css";
 import { LookupMenu } from "./components/userLookup";
 import { IpLookup } from "./components/ipLookup";
@@ -6,9 +6,12 @@ import { GlobalContext } from "./types/global";
 import { CidLookup } from "./components/cidLookup";
 import { RoundData } from "./components/roundData";
 import { Dialog } from "./components/dialog";
+import { StickybansModal } from "./components/stickybans";
 
-export default function App() {
+export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>(null);
+
+  const [stickyMenu, setStickyMenu] = useState(false);
 
   const displayToast = (string: string) => {
     showToastMessage(string);
@@ -29,6 +32,22 @@ export default function App() {
               <LookupOption type="ip">Lookup IP</LookupOption>
               <LookupOption type="cid">Lookup CID</LookupOption>
             </div>
+
+            <div
+              onClick={() => setStickyMenu(true)}
+              className={"border border-white p-3 cursor-pointer grow"}
+            >
+              Sticky Menu
+            </div>
+            {stickyMenu && (
+              <Dialog
+                open={stickyMenu}
+                toggle={() => setStickyMenu(false)}
+                className="w-11/12"
+              >
+                <StickybansModal />
+              </Dialog>
+            )}
 
             <RoundData />
           </div>
@@ -88,7 +107,6 @@ const LookupOption = (props: LookupProps) => {
               onInput={(event) => {
                 const target = event.target as HTMLInputElement;
                 setHeldValue(target.value);
-                console.log(`clearing ${timer}`);
                 clearTimeout(timer);
                 setTimer(
                   setTimeout(() => {

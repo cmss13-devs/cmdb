@@ -13,6 +13,7 @@ import { ConnectionHistory } from "../types/loginTriplet";
 import { Dialog } from "./dialog";
 import { TripletList } from "./tripletsList";
 import { Link } from "./link";
+import { Expand } from "./expand";
 
 type ActiveLookupType = {
   value: string;
@@ -403,21 +404,6 @@ const ConnectionTypeDetails = (props: {
         <TripletList triplets={connectionData.triplets} />
       )}
     </div>
-  );
-};
-
-const Expand = (props: { label: string; value: string }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <Link onClick={() => setOpen(true)}>{props.label}</Link>
-      {open && (
-        <Dialog open={open} toggle={() => setOpen(false)}>
-          <div className="pt-10">{props.value}</div>
-        </Dialog>
-      )}
-    </>
   );
 };
 
