@@ -36,8 +36,8 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
 
   return (
     <>
-      <div className="red-alert-bg p-3 mt-3">
-        <div className="foreground p-3">
+      <div className="red-alert-bg p-3 h-full">
+        <div className="foreground p-3 h-full flex flex-col justify-center">
           <Link onClick={() => setOpen(true)}>
             {getText()} has active stickybans.
           </Link>

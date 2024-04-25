@@ -56,7 +56,7 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-3">
       <form
         className="flex flex-row justify-center gap-3"
         onSubmit={(event) => {
@@ -80,6 +80,6 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
       {ipData && <StickybanMatch ip={confirmedIp} />}
       {loading && <div className="text-2xl text-center">Loading...</div>}
       {ipData?.triplets && <TripletList triplets={ipData.triplets} />}
-    </>
+    </div>
   );
 };

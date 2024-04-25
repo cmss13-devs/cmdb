@@ -55,7 +55,7 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-3">
       <form
         className="flex flex-row justify-center gap-3"
         onSubmit={(event) => {
@@ -79,6 +79,6 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
       {cidData && <StickybanMatch cid={confirmedCid} />}
       {loading && <div className="text-2xl text-center">Loading...</div>}
       {cidData?.triplets && <TripletList triplets={cidData.triplets} />}
-    </>
+    </div>
   );
 };

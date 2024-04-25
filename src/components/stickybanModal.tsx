@@ -26,6 +26,7 @@ export const StickybanModal: React.FC<StickybanModalProps> = (
               <th>Identifier</th>
               <th>Message</th>
               <th>Reason</th>
+              <th>Admin</th>
               <th>Actions</th>
             </tr>
             {stickybans.map((stickyban) => (
@@ -46,6 +47,7 @@ const StickybanEntry = (props: { stickyban: Stickyban }) => {
       <td className="border p-2">{stickyban.identifier}</td>
       <td className="border p-2">{stickyban.message}</td>
       <td className="border p-2">{stickyban.reason.trim()}</td>
+      <td className="border p-2">{stickyban.adminCkey ?? "AdminBot"}</td>
       <td className="border p-2">
         <ExpandDetails stickyban={stickyban} />
       </td>

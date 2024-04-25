@@ -135,9 +135,11 @@ const UserModal = (props: { player: Player }) => {
     <div className="flex flex-col gap-3">
       <div className="text-center text-2xl underline">{ckey}</div>
 
-      <div className="flex flex-row justify-center">
+      <div className="flex flex-col md:flex-row justify-center gap-2">
         <IsBannedModal player={player} />
-        <StickybanMatch ckey={player.ckey} />
+        <div>
+          <StickybanMatch ckey={player.ckey} />
+        </div>
       </div>
 
       {import.meta.env.VITE_USE_ACTIONS && (
