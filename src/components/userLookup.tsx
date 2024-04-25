@@ -477,12 +477,14 @@ const AddNote = (props: { ckey: string }) => {
         Confidential: confidential ? "true" : "false",
       }),
     }).then((response) => {
-      refetch?.updateUser(ckey);
-      if (response.body) {
-        global?.updateAndShowToast(`Added note to ${ckey}.`);
-      } else {
-        global?.updateAndShowToast(`Failed to add note.`);
-      }
+      response.text().then((response) => {
+        refetch?.updateUser(ckey);
+        if (response) {
+          global?.updateAndShowToast(`Added note to ${ckey}.`);
+        } else {
+          global?.updateAndShowToast(`Failed to add note.`);
+        }
+      });
     });
   };
 

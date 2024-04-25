@@ -89,14 +89,16 @@ const Whitelist = (props: { ckey: string }) => {
     fetch(`${import.meta.env.VITE_API_PATH}/Stickyban/Whitelist?ckey=${ckey}`, {
       method: "POST",
     }).then((value) => {
-      setOpen(false);
-      if (value) {
-        global?.updateAndShowToast(
-          `Whitelisted ${ckey} against ${value.body} stickybans.`
-        );
-      } else {
-        global?.updateAndShowToast(`No stickybans lifted for ${ckey}.`);
-      }
+      value.text().then((value) => {
+        setOpen(false);
+        if (value) {
+          global?.updateAndShowToast(
+            `Whitelisted ${ckey} against ${value} stickybans.`
+          );
+        } else {
+          global?.updateAndShowToast(`No stickybans lifted for ${ckey}.`);
+        }
+      });
     });
   };
 
