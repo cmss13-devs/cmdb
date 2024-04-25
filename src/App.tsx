@@ -21,12 +21,21 @@ export default function App(): React.ReactElement {
   };
 
   useEffect(() => {
-    if (import.meta.env.PROD && !user) {
-      fetch(window.location.href + "/oauth2/userinfo").then((value) =>
-        value.json().then((json) => setUser(json))
-      );
+    if (!user) {
+      if (import.meta.env.PROD) {
+        fetch(window.location.href + "/oauth2/userinfo").then((value) =>
+          value.json().then((json) => setUser(json))
+        );
+      }
+      if (import.meta.env.VITE_FAKE_USER) {
+        setUser({
+          preferredUsername: "debug",
+          email: "debug@debug.debug",
+          groups: [],
+        });
+      }
     }
-  });
+  }, [setUser, user]);
 
   return (
     <GlobalContext.Provider
@@ -35,8 +44,10 @@ export default function App(): React.ReactElement {
       <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
         <div className="md:flex flex-row justify-center">
           <div className="flex flex-col gap-3">
-            <div className="text-3xl underline text-center">cmdb</div>
-            {user && <div>{user.preferredUsername}</div>}
+            <div className="flex flex-row justify-between">
+              <div className="text-3xl underline text-center">cmdb</div>
+              {user && <div>{user.preferredUsername}</div>}
+            </div>
             <div className="flex flex-col md:flex-row gap-3">
               <LookupOption type="lookup">Lookup User</LookupOption>
               <LookupOption type="ip">Lookup IP</LookupOption>
