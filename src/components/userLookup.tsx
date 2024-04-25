@@ -1,6 +1,7 @@
 import {
   PropsWithChildren,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -17,7 +18,6 @@ import { Expand } from "./expand";
 import { StickybanMatch } from "./stickybanMatch";
 
 type ActiveLookupType = {
-  value: string;
   updateUser: (string?: string) => void;
 };
 
@@ -36,42 +36,38 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const [loading, setLoading] = useState(false);
   const global = useContext(GlobalContext);
 
-  const { value } = props;
+  const { value, close } = props;
+
+  const updateUser = useCallback(
+    (override?: string) => {
+      setLoading(true);
+      fetch(`${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${override}`).then(
+        (value) =>
+          value.json().then((json) => {
+            setLoading(false);
+            if (json.status == 404) {
+              global?.updateAndShowToast("Failed to find user.");
+              if (close) {
+                close();
+              }
+            } else {
+              setUserData(json);
+            }
+          })
+      );
+    },
+    [setLoading, setUserData, close, global]
+  );
 
   useEffect(() => {
     if (value && !userData) {
+      console.log("this way");
       updateUser(value);
     }
-  });
-
-  const updateUser = (override?: string) => {
-    setLoading(true);
-    if (override) {
-      setUser(override);
-    }
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${
-        override ? override : user
-      }`
-    ).then((value) =>
-      value.json().then((json) => {
-        setLoading(false);
-        if (json.status == 404) {
-          global?.updateAndShowToast("Failed to find user.");
-          if (props.close) {
-            props.close();
-          }
-        } else {
-          setUserData(json);
-        }
-      })
-    );
-  };
+  }, [value, userData, updateUser]);
 
   return (
-    <ActiveLookupContext.Provider
-      value={{ value: user, updateUser: updateUser }}
-    >
+    <ActiveLookupContext.Provider value={{ updateUser: updateUser }}>
       {!value && (
         <form
           className="flex flex-row justify-center gap-3"
@@ -373,16 +369,12 @@ const ConnectionTypeDetails = (props: {
   const { path, value } = props;
 
   useEffect(() => {
-    console.log("fire once");
-  }, []);
-
-  useEffect(() => {
     if (!connectionData) {
       fetch(`${import.meta.env.VITE_API_PATH}${path}${value}`).then((value) =>
         value.json().then((json) => setConnectionData(json))
       );
     }
-  });
+  }, [connectionData, path, value]);
 
   if (!connectionData) {
     return <div className="text-center">Loading...</div>;
