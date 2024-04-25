@@ -92,7 +92,7 @@ const Whitelist = (props: { ckey: string }) => {
       setOpen(false);
       if (value) {
         global?.updateAndShowToast(
-          `Whitelisted ${ckey} against ${value} stickybans.`
+          `Whitelisted ${ckey} against ${value.body} stickybans.`
         );
       } else {
         global?.updateAndShowToast(`No stickybans lifted for ${ckey}.`);

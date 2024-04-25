@@ -478,7 +478,7 @@ const AddNote = (props: { ckey: string }) => {
       }),
     }).then((response) => {
       refetch?.updateUser(ckey);
-      if (response) {
+      if (response.body) {
         global?.updateAndShowToast(`Added note to ${ckey}.`);
       } else {
         global?.updateAndShowToast(`Failed to add note.`);
