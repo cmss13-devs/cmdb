@@ -61,7 +61,6 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
 
   useEffect(() => {
     if (value && !userData) {
-      console.log("this way");
       updateUser(value);
     }
   }, [value, userData, updateUser]);
@@ -350,7 +349,11 @@ const ConnectionType = (props: {
     <>
       <Link onClick={() => setOpen(true)}>{label}</Link>
       {open && (
-        <Dialog open={open} toggle={() => setOpen(false)}>
+        <Dialog
+          open={open}
+          toggle={() => setOpen(false)}
+          className="min-h-11/12"
+        >
           <ConnectionTypeDetails path={path} value={value} />
         </Dialog>
       )}
@@ -430,7 +433,7 @@ const UserNotesModal = (props: { player: Player }) => {
   return (
     <div className="flex flex-col">
       <div className="text-2xl">Notes:</div>
-      <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-scroll">
+      <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-auto">
         {notes?.map((note) => (
           <UserNote note={note} key={note.id} />
         ))}

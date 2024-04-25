@@ -19,7 +19,7 @@ export const StickybanModal: React.FC<StickybanModalProps> = (
 
   return (
     <div className="pt-10">
-      <div className="overflow-scroll max-h-[800px]">
+      <div className="overflow-auto max-h-[800px]">
         <table className="w-full">
           <tbody>
             <tr>
