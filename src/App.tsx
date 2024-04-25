@@ -1,17 +1,17 @@
-import React, { PropsWithChildren, useRef, useState } from "react";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { LookupMenu } from "./components/userLookup";
 import { IpLookup } from "./components/ipLookup";
-import { GlobalContext } from "./types/global";
+import { GlobalContext, User } from "./types/global";
 import { CidLookup } from "./components/cidLookup";
 import { RoundData } from "./components/roundData";
 import { Dialog } from "./components/dialog";
 import { Stickybans } from "./components/stickybans";
 
 export default function App(): React.ReactElement {
-  const [toastMessage, showToastMessage] = useState<string | null>(null);
-
+  const [toastMessage, showToastMessage] = useState<string | null>();
   const [stickyMenu, setStickyMenu] = useState(false);
+  const [user, setUser] = useState<User | undefined>();
 
   const displayToast = (string: string) => {
     showToastMessage(string);
@@ -20,13 +20,23 @@ export default function App(): React.ReactElement {
     }, 3000);
   };
 
+  useEffect(() => {
+    if (import.meta.env.PROD && !user) {
+      fetch(window.location.href + "/oauth2/userinfo").then((value) =>
+        value.json().then((json) => setUser(json))
+      );
+    }
+  });
+
   return (
-    <GlobalContext.Provider value={{ updateAndShowToast: displayToast }}>
+    <GlobalContext.Provider
+      value={{ updateAndShowToast: displayToast, user: user }}
+    >
       <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen rounded mt-5 p-5">
         <div className="md:flex flex-row justify-center">
           <div className="flex flex-col gap-3">
             <div className="text-3xl underline text-center">cmdb</div>
-
+            {user && <div>{user.preferredUsername}</div>}
             <div className="flex flex-col md:flex-row gap-3">
               <LookupOption type="lookup">Lookup User</LookupOption>
               <LookupOption type="ip">Lookup IP</LookupOption>
