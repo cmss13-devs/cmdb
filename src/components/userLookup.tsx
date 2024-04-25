@@ -31,14 +31,12 @@ interface LookupMenuProps extends PropsWithChildren {
 export const LookupMenu: React.FC<LookupMenuProps> = (
   props: LookupMenuProps
 ) => {
-  const { value } = props;
-
   const [user, setUser] = useState<string>("");
   const [userData, setUserData] = useState<Player | null>(null);
-
   const [loading, setLoading] = useState(false);
-
   const global = useContext(GlobalContext);
+
+  const { value } = props;
 
   useEffect(() => {
     if (value && !userData) {
@@ -375,9 +373,15 @@ const ConnectionTypeDetails = (props: {
   const { path, value } = props;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_PATH}${path}${value}`).then((value) =>
-      value.json().then((json) => setConnectionData(json))
-    );
+    console.log("fire once");
+  }, []);
+
+  useEffect(() => {
+    if (!connectionData) {
+      fetch(`${import.meta.env.VITE_API_PATH}${path}${value}`).then((value) =>
+        value.json().then((json) => setConnectionData(json))
+      );
+    }
   });
 
   if (!connectionData) {
