@@ -7,6 +7,7 @@ import React, {
 import { GlobalContext } from "../types/global";
 import { ConnectionHistory } from "../types/loginTriplet";
 import { TripletList } from "./tripletsList";
+import { StickybanMatch } from "./stickybanMatch";
 
 interface CidLookupProps extends PropsWithChildren {
   initialCid?: string;
@@ -17,20 +18,22 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
   const { initialCid } = props;
 
   const [cid, setCid] = useState<string>("");
-  const [ipData, setCidData] = useState<ConnectionHistory | null>(null);
+  const [cidData, setCidData] = useState<ConnectionHistory | null>(null);
+  const [confirmedCid, setConfirmedCid] = useState("");
 
   const [loading, setLoading] = useState(false);
 
   const global = useContext(GlobalContext);
 
   useEffect(() => {
-    if (initialCid && !ipData) {
+    if (initialCid && !cidData) {
       updateCid(initialCid);
     }
   });
 
   const updateCid = (override?: string) => {
     setLoading(true);
+    setConfirmedCid(override || cid);
     if (override) {
       setCid(override);
     }
@@ -73,8 +76,9 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
         ></input>
       </form>
 
+      {cidData && <StickybanMatch cid={confirmedCid} />}
       {loading && <div className="text-2xl text-center">Loading...</div>}
-      {ipData?.triplets && <TripletList triplets={ipData.triplets} />}
+      {cidData?.triplets && <TripletList triplets={cidData.triplets} />}
     </>
   );
 };

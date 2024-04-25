@@ -14,6 +14,7 @@ import { Dialog } from "./dialog";
 import { TripletList } from "./tripletsList";
 import { Link } from "./link";
 import { Expand } from "./expand";
+import { StickybanMatch } from "./stickybanMatch";
 
 type ActiveLookupType = {
   value: string;
@@ -142,6 +143,7 @@ const UserModal = (props: { player: Player }) => {
 
       <div className="flex flex-row justify-center">
         <IsBannedModal player={player} />
+        <StickybanMatch ckey={player.ckey} />
       </div>
 
       {import.meta.env.VITE_USE_ACTIONS && (

@@ -7,6 +7,7 @@ import React, {
 import { GlobalContext } from "../types/global";
 import { TripletList } from "./tripletsList";
 import { ConnectionHistory } from "../types/loginTriplet";
+import { StickybanMatch } from "./stickybanMatch";
 
 interface IpLookupProps extends PropsWithChildren {
   initialIp?: string;
@@ -17,6 +18,8 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
   const { initialIp } = props;
 
   const [ip, setIp] = useState<string>("");
+  const [confirmedIp, setConfirmedIp] = useState("");
+
   const [ipData, setIpData] = useState<ConnectionHistory | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -31,6 +34,7 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
 
   const updateIp = (override?: string) => {
     setLoading(true);
+    setConfirmedIp(override || ip);
     if (override) {
       setIp(override);
     }
@@ -73,6 +77,7 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
         ></input>
       </form>
 
+      {ipData && <StickybanMatch ip={confirmedIp} />}
       {loading && <div className="text-2xl text-center">Loading...</div>}
       {ipData?.triplets && <TripletList triplets={ipData.triplets} />}
     </>

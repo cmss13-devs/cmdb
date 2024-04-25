@@ -6,7 +6,7 @@ import { GlobalContext } from "./types/global";
 import { CidLookup } from "./components/cidLookup";
 import { RoundData } from "./components/roundData";
 import { Dialog } from "./components/dialog";
-import { StickybansModal } from "./components/stickybans";
+import { Stickybans } from "./components/stickybans";
 
 export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>(null);
@@ -45,7 +45,7 @@ export default function App(): React.ReactElement {
                 toggle={() => setStickyMenu(false)}
                 className="w-11/12"
               >
-                <StickybansModal />
+                <Stickybans />
               </Dialog>
             )}
 
