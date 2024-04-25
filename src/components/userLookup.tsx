@@ -461,6 +461,8 @@ const AddNote = (props: { ckey: string }) => {
 
   const { ckey } = props;
 
+  const global = useContext(GlobalContext);
+
   const send = () => {
     fetch(`${import.meta.env.VITE_API_PATH}/User/Note`, {
       method: "POST",
@@ -473,6 +475,13 @@ const AddNote = (props: { ckey: string }) => {
         Category: "1",
         Confidential: confidential ? "true" : "false",
       }),
+    }).then((response) => {
+      setAdding(false);
+      if (response) {
+        global?.updateAndShowToast(`Added note to ${ckey}.`);
+      } else {
+        global?.updateAndShowToast(`Failed to add note.`);
+      }
     });
   };
 
