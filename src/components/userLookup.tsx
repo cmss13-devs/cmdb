@@ -462,6 +462,7 @@ const AddNote = (props: { ckey: string }) => {
   const { ckey } = props;
 
   const global = useContext(GlobalContext);
+  const refetch = useContext(ActiveLookupContext);
 
   const send = () => {
     fetch(`${import.meta.env.VITE_API_PATH}/User/Note`, {
@@ -476,7 +477,7 @@ const AddNote = (props: { ckey: string }) => {
         Confidential: confidential ? "true" : "false",
       }),
     }).then((response) => {
-      setAdding(false);
+      refetch?.updateUser(ckey);
       if (response) {
         global?.updateAndShowToast(`Added note to ${ckey}.`);
       } else {

@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Stickyban } from "../types/stickyban";
 import { Link } from "./link";
 import { Dialog } from "./dialog";
 import { StickybanModal } from "./stickybanModal";
+import { offset, useFloating } from "@floating-ui/react";
+import { GlobalContext } from "../types/global";
 
 export const StickybanMatch: React.FC<StickybanMatch> = (
   props: StickybanMatch
@@ -38,9 +45,24 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
     <>
       <div className="red-alert-bg p-3 h-full">
         <div className="foreground p-3 h-full flex flex-col justify-center">
-          <Link onClick={() => setOpen(true)}>
-            {getText()} has active stickybans.
-          </Link>
+          <div className="flex flex-row gap-3">
+            <div className="flex flex-col justify-center">
+              <Link onClick={() => setOpen(true)}>
+                {getText()} has active stickybans.
+              </Link>
+            </div>
+            {ckey && (
+              <Tooltip
+                tooltip={
+                  "This will whitelist the user against all matching stickybans."
+                }
+              >
+                <div className="border border-white p-1">
+                  <Whitelist ckey={ckey} />
+                </div>
+              </Tooltip>
+            )}
+          </div>
         </div>
       </div>
       {open && (
@@ -48,6 +70,84 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
           <StickybanModal stickybans={stickyData} />
         </Dialog>
       )}
+    </>
+  );
+};
+
+interface TooltipProps extends PropsWithChildren {
+  tooltip: string;
+}
+
+const Whitelist = (props: { ckey: string }) => {
+  const [open, setOpen] = useState(false);
+
+  const { ckey } = props;
+
+  const global = useContext(GlobalContext);
+
+  const doWhitelist = () => {
+    fetch(`${import.meta.env.VITE_API_PATH}/Stickyban/Whitelist?ckey=${ckey}`, {
+      method: "POST",
+    }).then((value) => {
+      setOpen(false);
+      if (value) {
+        global?.updateAndShowToast(
+          `Whitelisted ${ckey} against ${value} stickybans.`
+        );
+      } else {
+        global?.updateAndShowToast(`No stickybans lifted for ${ckey}.`);
+      }
+    });
+  };
+
+  return (
+    <>
+      <Link onClick={() => setOpen(true)}>Whitelist?</Link>
+      {open && (
+        <Dialog open={open} toggle={() => setOpen(false)}>
+          <div className="flex flex-col">
+            <div className="pt-10 flex flex-row justify-center">
+              Confirm whitelisting {ckey}?
+            </div>
+            <Link
+              onClick={() => doWhitelist()}
+              className="flex flex-row justify-center"
+            >
+              Whitelist
+            </Link>
+          </div>
+        </Dialog>
+      )}
+    </>
+  );
+};
+
+const Tooltip = (props: TooltipProps) => {
+  const [hovered, setHovered] = useState(false);
+
+  const { refs, floatingStyles } = useFloating({
+    placement: "top",
+    middleware: [offset(5)],
+  });
+
+  return (
+    <>
+      {hovered && (
+        <div
+          ref={refs.setFloating}
+          style={floatingStyles}
+          className="foreground border-white border"
+        >
+          {props.tooltip}
+        </div>
+      )}
+      <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        ref={refs.setReference}
+      >
+        {props.children}
+      </div>
     </>
   );
 };
