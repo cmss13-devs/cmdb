@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { HTMLAttributes } from "react";
 
 interface DialogPropsType extends HTMLAttributes<HTMLDialogElement> {
-  open?: boolean;
+  open: boolean;
   toggle: () => void;
 }
 

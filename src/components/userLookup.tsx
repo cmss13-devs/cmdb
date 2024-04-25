@@ -432,7 +432,12 @@ const UserNotesModal = (props: { player: Player }) => {
 
   return (
     <div className="flex flex-col">
-      <div className="text-2xl">Notes:</div>
+      <div className="flex flex-row gap-3">
+        <div className="text-2xl">Notes:</div>
+        <div className="flex flex-col justify-center">
+          <AddNote ckey={player.ckey} />
+        </div>
+      </div>
       <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-auto">
         {notes?.map((note) => (
           <UserNote note={note} key={note.id} />
@@ -443,6 +448,83 @@ const UserNotesModal = (props: { player: Player }) => {
           ))}
       </div>
     </div>
+  );
+};
+
+const AddNote = (props: { ckey: string }) => {
+  const [adding, setAdding] = useState(false);
+
+  const [message, setMessage] = useState("");
+  const [confidential, setConfidential] = useState(false);
+
+  const [confirm, setConfirm] = useState(false);
+
+  const { ckey } = props;
+
+  const send = () => {
+    fetch(`${import.meta.env.VITE_API_PATH}/User/Note`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        Ckey: ckey,
+        Message: message,
+        Category: "1",
+        Confidential: confidential ? "true" : "false",
+      }),
+    });
+  };
+
+  return (
+    <>
+      <Link onClick={() => setAdding(true)}>Add Note</Link>
+      {adding && (
+        <Dialog toggle={() => setAdding(false)} open={adding}>
+          <form className="pt-10">
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col lg:flex-row justify-center gap-3">
+                <div className="flex flex-col">
+                  <label
+                    className="flex flex-row justify-center"
+                    htmlFor="message"
+                  >
+                    Message
+                  </label>
+                  <textarea
+                    id="message"
+                    className="max-w-full box-border"
+                    cols={70}
+                    rows={5}
+                    onChange={(event) => {
+                      setMessage(event.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label className="flex flex-row justify-center">
+                    Confidential
+                  </label>
+                  <input
+                    type="checkbox"
+                    onChange={() => setConfidential(!confidential)}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-row justify-center">
+                {!confirm ? (
+                  <Link onClick={() => setConfirm(true)}>Submit</Link>
+                ) : (
+                  <Link onClick={() => send()} className="text-red-700">
+                    Confirm
+                  </Link>
+                )}
+              </div>
+            </div>
+          </form>
+        </Dialog>
+      )}
+    </>
   );
 };
 
