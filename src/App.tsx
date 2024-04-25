@@ -23,7 +23,7 @@ export default function App(): React.ReactElement {
   useEffect(() => {
     if (!user) {
       if (import.meta.env.PROD) {
-        fetch(window.location.href + "/oauth2/userinfo").then((value) =>
+        fetch(window.location.href + "oauth2/userinfo").then((value) =>
           value.json().then((json) => setUser(json))
         );
       }
@@ -106,7 +106,7 @@ const LookupOption = (props: LookupProps) => {
           clearTimeout(timer);
           const timeout = setTimeout(() => {
             setSelected(false);
-          }, 3000);
+          }, 6000);
           setTimeout(() => {
             inputRef.current?.focus();
           }, 1);

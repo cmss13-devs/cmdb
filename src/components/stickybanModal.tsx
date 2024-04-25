@@ -43,7 +43,7 @@ const StickybanEntry = (props: { stickyban: Stickyban }) => {
   const { stickyban } = props;
 
   return (
-    <tr>
+    <tr className={`${stickyban.active ? "" : "text-gray-500"}`}>
       <td className="border p-2">{stickyban.identifier}</td>
       <td className="border p-2">{stickyban.message}</td>
       <td className="border p-2">{stickyban.reason.trim()}</td>
@@ -97,7 +97,7 @@ const ExpandDetails = (props: { stickyban: Stickyban }) => {
       <Link onClick={() => check()}>Details</Link>
       {open && (
         <Dialog open={!!cids} toggle={() => setOpen(false)}>
-          <div className="flex flex-col pt-10">
+          <div className="flex flex-col gap-2 pt-10">
             <div>CIDs: {cids && cids.map((cid) => cid.cid).join(", ")}</div>
             <div>
               CKEYs: {ckeys && ckeys.map((ckey) => ckey.ckey).join(", ")}
