@@ -8,6 +8,7 @@ import { GlobalContext } from "../types/global";
 import { TripletList } from "./tripletsList";
 import { ConnectionHistory } from "../types/loginTriplet";
 import { StickybanMatch } from "./stickybanMatch";
+import { callApi } from "../helpers/api";
 
 interface IpLookupProps extends PropsWithChildren {
   initialIp?: string;
@@ -38,11 +39,7 @@ export const IpLookup: React.FC<IpLookupProps> = (props: IpLookupProps) => {
     if (override) {
       setIp(override);
     }
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/Connections/Ip?ip=${
-        override ? override : ip
-      }`
-    ).then((value) =>
+    callApi(`/Connections/Ip?ip=${override ? override : ip}`).then((value) =>
       value.json().then((json) => {
         setLoading(false);
         if (json.status == 404) {

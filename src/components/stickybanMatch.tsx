@@ -10,6 +10,7 @@ import { Dialog } from "./dialog";
 import { StickybanModal } from "./stickybanModal";
 import { offset, useFloating } from "@floating-ui/react";
 import { GlobalContext } from "../types/global";
+import { callApi } from "../helpers/api";
 
 export const StickybanMatch: React.FC<StickybanMatch> = (
   props: StickybanMatch
@@ -22,7 +23,7 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
   const getPath = () => {
     if (ip) return `/Stickyban/Ip?ip=${ip}`;
     if (ckey) return `/Stickyban/Ckey?ckey=${ckey}`;
-    if (cid) return `/Stickyban/Cid?cid=${cid}`;
+    return `/Stickyban/Cid?cid=${cid}`;
   };
 
   const getText = () => {
@@ -33,7 +34,7 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
 
   useEffect(() => {
     if (!stickyData) {
-      fetch(`${import.meta.env.VITE_API_PATH}${getPath()}`).then((value) =>
+      callApi(getPath()).then((value) =>
         value.json().then((json) => setStickyData(json))
       );
     }
@@ -86,7 +87,7 @@ const Whitelist = (props: { ckey: string }) => {
   const global = useContext(GlobalContext);
 
   const doWhitelist = () => {
-    fetch(`${import.meta.env.VITE_API_PATH}/User//Whitelist`, {
+    callApi(`/Stickyban/Whitelist?ckey=${ckey}`, {
       method: "POST",
     }).then((value) => {
       value.text().then((value) => {

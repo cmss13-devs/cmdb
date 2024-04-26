@@ -7,6 +7,7 @@ import {
 } from "../types/stickyban";
 import { Link } from "./link";
 import { Dialog } from "./dialog";
+import { callApi } from "../helpers/api";
 
 type StickybanModalProps = {
   stickybans: Stickyban[];
@@ -67,25 +68,19 @@ const ExpandDetails = (props: { stickyban: Stickyban }) => {
   const check = () => {
     setOpen(true);
 
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/Stickyban/Match/Cid?id=${stickyban.id}`
-    ).then((value) =>
+    callApi(`/Stickyban/Match/Cid?id=${stickyban.id}`).then((value) =>
       value.json().then((json) => {
         setCids(json);
       })
     );
 
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/Stickyban/Match/Ckey?id=${stickyban.id}`
-    ).then((value) =>
+    callApi(`/Stickyban/Match/Ckey?id=${stickyban.id}`).then((value) =>
       value.json().then((json) => {
         setCkeys(json);
       })
     );
 
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/Stickyban/Match/Ip?id=${stickyban.id}`
-    ).then((value) =>
+    callApi(`/Stickyban/Match/Ip?id=${stickyban.id}`).then((value) =>
       value.json().then((json) => {
         setIps(json);
       })

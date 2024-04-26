@@ -8,6 +8,7 @@ import { GlobalContext } from "../types/global";
 import { ConnectionHistory } from "../types/loginTriplet";
 import { TripletList } from "./tripletsList";
 import { StickybanMatch } from "./stickybanMatch";
+import { callApi } from "../helpers/api";
 
 interface CidLookupProps extends PropsWithChildren {
   initialCid?: string;
@@ -37,11 +38,7 @@ export const CidLookup: React.FC<CidLookupProps> = (props: CidLookupProps) => {
     if (override) {
       setCid(override);
     }
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/Connections/Cid?cid=${
-        override ? override : cid
-      }`
-    ).then((value) =>
+    callApi(`/Connections/Cid?cid=${override ? override : cid}`).then((value) =>
       value.json().then((json) => {
         setLoading(false);
         if (json.status == 404) {

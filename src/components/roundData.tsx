@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
+import { callApi } from "../helpers/api";
 
 type RoundData = {
   mode: string;
@@ -26,7 +27,7 @@ export const RoundData: React.FC = () => {
 
   useEffect(() => {
     if (!roundData) {
-      fetch(`${import.meta.env.VITE_API_PATH}/Round`).then((value) =>
+      callApi(`/Round`).then((value) =>
         value.json().then((json) => setRoundData(json.data))
       );
     }

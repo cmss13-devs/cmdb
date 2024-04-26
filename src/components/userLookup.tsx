@@ -16,6 +16,7 @@ import { TripletList } from "./tripletsList";
 import { Link } from "./link";
 import { Expand } from "./expand";
 import { StickybanMatch } from "./stickybanMatch";
+import { callApi } from "../helpers/api";
 
 type ActiveLookupType = {
   updateUser: (string?: string) => void;
@@ -41,19 +42,18 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const updateUser = useCallback(
     (override?: string) => {
       setLoading(true);
-      fetch(`${import.meta.env.VITE_API_PATH}/User?ckey=${override}`).then(
-        (value) =>
-          value.json().then((json) => {
-            setLoading(false);
-            if (json.status == 404) {
-              global?.updateAndShowToast("Failed to find user.");
-              if (close) {
-                close();
-              }
-            } else {
-              setUserData(json);
+      callApi(`/User?ckey=${override}`).then((value) =>
+        value.json().then((json) => {
+          setLoading(false);
+          if (json.status == 404) {
+            global?.updateAndShowToast("Failed to find user.");
+            if (close) {
+              close();
             }
-          })
+          } else {
+            setUserData(json);
+          }
+        })
       );
     },
     [setLoading, setUserData, close, global]
@@ -375,7 +375,7 @@ const ConnectionTypeDetails = (props: {
 
   useEffect(() => {
     if (!connectionData) {
-      fetch(`${import.meta.env.VITE_API_PATH}${path}${value}`).then((value) =>
+      callApi(`${path}${value}`).then((value) =>
         value.json().then((json) => setConnectionData(json))
       );
     }
@@ -472,9 +472,9 @@ const ViewAppliedNotes = (props: { player: Player }) => {
   const { player } = props;
 
   const openDialog = () => {
-    fetch(
-      `${import.meta.env.VITE_API_PATH}/User/${player.id}/AppliedNotes`
-    ).then((val) => val.json().then((json) => setNotes(json)));
+    callApi(`/User/${player.id}/AppliedNotes`).then((val) =>
+      val.json().then((json) => setNotes(json))
+    );
   };
 
   return (
@@ -507,7 +507,7 @@ const AddNote = (props: { player: Player }) => {
   const refetch = useContext(ActiveLookupContext);
 
   const send = () => {
-    fetch(`${import.meta.env.VITE_API_PATH}/User/${player.id}/Note`, {
+    callApi(`/User/${player.id}/Note`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
