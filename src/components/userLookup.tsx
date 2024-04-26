@@ -41,7 +41,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const updateUser = useCallback(
     (override?: string) => {
       setLoading(true);
-      fetch(`${import.meta.env.VITE_API_PATH}/User/Ckey?ckey=${override}`).then(
+      fetch(`${import.meta.env.VITE_API_PATH}/User?ckey=${override}`).then(
         (value) =>
           value.json().then((json) => {
             setLoading(false);
@@ -414,7 +414,7 @@ interface PlayerNote {
   id: number;
   playerId: number;
   adminId: number;
-  text: string;
+  text?: string;
   date: string;
   isBan: boolean;
   banTime?: number;
@@ -422,6 +422,7 @@ interface PlayerNote {
   adminRank: string;
   noteCategory?: number;
   roundId?: number;
+  notedPlayerCkey?: string;
   notingAdminCkey?: string;
 }
 
@@ -435,23 +436,62 @@ const UserNotesModal = (props: { player: Player }) => {
       <div className="flex flex-row gap-3">
         <div className="text-2xl">Notes:</div>
         <div className="flex flex-col justify-center">
-          <AddNote ckey={player.ckey} />
+          <div className="flex flex-row gap-1">
+            <AddNote player={player} />
+            |
+            <ViewAppliedNotes player={player} />
+          </div>
         </div>
       </div>
-      <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-auto">
-        {notes?.map((note) => (
-          <UserNote note={note} key={note.id} />
-        ))}
-        {!notes ||
-          (!notes.length && (
-            <div className="flex flex-row justify-center">No notes..</div>
-          ))}
-      </div>
+      <NotesList notes={notes} />
     </div>
   );
 };
 
-const AddNote = (props: { ckey: string }) => {
+const NotesList = (props: { notes?: PlayerNote[]; displayNoted?: boolean }) => {
+  const { notes, displayNoted } = props;
+
+  return (
+    <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-auto">
+      {notes
+        ?.filter((note) => note.text)
+        .map((note) => (
+          <UserNote note={note} key={note.id} displayNoted={displayNoted} />
+        ))}
+      {!notes ||
+        (!notes.length && (
+          <div className="flex flex-row justify-center">No notes..</div>
+        ))}
+    </div>
+  );
+};
+
+const ViewAppliedNotes = (props: { player: Player }) => {
+  const [notes, setNotes] = useState<PlayerNote[] | null>();
+
+  const { player } = props;
+
+  const openDialog = () => {
+    fetch(
+      `${import.meta.env.VITE_API_PATH}/User/${player.id}/AppliedNotes`
+    ).then((val) => val.json().then((json) => setNotes(json)));
+  };
+
+  return (
+    <>
+      <Link onClick={() => openDialog()}>View Applied Notes</Link>
+      {notes && (
+        <Dialog open={!!notes} toggle={() => setNotes(null)}>
+          <div className="pt-10">
+            <NotesList notes={notes} displayNoted={true} />
+          </div>
+        </Dialog>
+      )}
+    </>
+  );
+};
+
+const AddNote = (props: { player: Player }) => {
   const [adding, setAdding] = useState(false);
 
   const [message, setMessage] = useState("");
@@ -459,19 +499,20 @@ const AddNote = (props: { ckey: string }) => {
 
   const [confirm, setConfirm] = useState(false);
 
-  const { ckey } = props;
+  const { player } = props;
+
+  const { ckey } = player;
 
   const global = useContext(GlobalContext);
   const refetch = useContext(ActiveLookupContext);
 
   const send = () => {
-    fetch(`${import.meta.env.VITE_API_PATH}/User/Note`, {
+    fetch(`${import.meta.env.VITE_API_PATH}/User/${player.id}/Note`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        Ckey: ckey,
         Message: message,
         Category: "1",
         Confidential: confidential ? "true" : "false",
@@ -479,6 +520,7 @@ const AddNote = (props: { ckey: string }) => {
     }).then((response) => {
       response.text().then((response) => {
         refetch?.updateUser(ckey);
+        setAdding(false);
         if (response) {
           global?.updateAndShowToast(`Added note to ${ckey}.`);
         } else {
@@ -545,8 +587,8 @@ const NOTE_COMMANDER = 3;
 const NOTE_SYNTHETIC = 4;
 const NOTE_YAUTJA = 5;
 
-const UserNote = (props: { note: PlayerNote }) => {
-  const { note } = props;
+const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
+  const { note, displayNoted } = props;
   const {
     text,
     date,
@@ -554,6 +596,7 @@ const UserNote = (props: { note: PlayerNote }) => {
     adminRank,
     isBan,
     noteCategory,
+    notedPlayerCkey,
     notingAdminCkey,
   } = note;
 
@@ -585,6 +628,12 @@ const UserNote = (props: { note: PlayerNote }) => {
         {text}
       </div>
       <div className="italic flex flex-row justify-end">
+        {displayNoted && (
+          <div>
+            to
+            <RichUser name={notedPlayerCkey} />
+          </div>
+        )}
         by <RichUser name={notingAdminCkey} /> ({adminRank}){" "}
         {isConfidential && "[CONFIDENTIALLY]"} on {date}
       </div>

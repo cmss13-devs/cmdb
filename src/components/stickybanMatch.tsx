@@ -86,7 +86,7 @@ const Whitelist = (props: { ckey: string }) => {
   const global = useContext(GlobalContext);
 
   const doWhitelist = () => {
-    fetch(`${import.meta.env.VITE_API_PATH}/Stickyban/Whitelist?ckey=${ckey}`, {
+    fetch(`${import.meta.env.VITE_API_PATH}/User//Whitelist`, {
       method: "POST",
     }).then((value) => {
       value.text().then((value) => {
