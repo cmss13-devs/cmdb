@@ -37,6 +37,13 @@ export default function App(): React.ReactElement {
     }
   }, [setUser, user]);
 
+  useEffect(() => {
+    const amount = location.href.search(/\?forceRefresh=true/);
+    if (amount > 0) {
+      displayToast("Session reloaded as you were timed out.");
+    }
+  }, []);
+
   return (
     <GlobalContext.Provider
       value={{ updateAndShowToast: displayToast, user: user }}
