@@ -68,19 +68,19 @@ const ExpandDetails = (props: { stickyban: Stickyban }) => {
   const check = () => {
     setOpen(true);
 
-    callApi(`/Stickyban/Match/Cid?id=${stickyban.id}`).then((value) =>
+    callApi(`/Stickyban/${stickyban.id}/Match/Cid`).then((value) =>
       value.json().then((json) => {
         setCids(json);
       })
     );
 
-    callApi(`/Stickyban/Match/Ckey?id=${stickyban.id}`).then((value) =>
+    callApi(`/Stickyban/${stickyban.id}/Match/Ckey`).then((value) =>
       value.json().then((json) => {
         setCkeys(json);
       })
     );
 
-    callApi(`/Stickyban/Match/Ip?id=${stickyban.id}`).then((value) =>
+    callApi(`/Stickyban/${stickyban.id}/Match/Ip`).then((value) =>
       value.json().then((json) => {
         setIps(json);
       })
