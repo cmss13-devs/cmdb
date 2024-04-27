@@ -52,7 +52,7 @@ export default function App(): React.ReactElement {
         <div className="md:flex flex-row justify-center">
           <div className="flex flex-col gap-3">
             <div className="flex flex-row justify-between">
-              <div className="text-3xl underline text-center">cmdb</div>
+              <div className="text-3xl underline text-center">[cmdb]</div>
               {user && <div>{user.preferredUsername}</div>}
             </div>
             <div className="flex flex-col md:flex-row gap-3">
