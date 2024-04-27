@@ -23,9 +23,9 @@ export default function App(): React.ReactElement {
   useEffect(() => {
     if (!user) {
       if (import.meta.env.PROD) {
-        fetch(window.location.href + "oauth2/userinfo").then((value) =>
-          value.json().then((json) => setUser(json))
-        );
+        fetch(
+          `${location.protocol}//${location.host}/` + "oauth2/userinfo"
+        ).then((value) => value.json().then((json) => setUser(json)));
       }
       if (import.meta.env.VITE_FAKE_USER) {
         setUser({
