@@ -42,19 +42,20 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const updateUser = useCallback(
     (override?: string) => {
       setLoading(true);
-      callApi(`/User?ckey=${override}`).then((value) =>
-        value.json().then((json) => {
-          setLoading(false);
-          if (json.status == 404) {
-            global?.updateAndShowToast("Failed to find user.");
-            if (close) {
-              close();
-            }
-          } else {
-            setUserData(json);
+      callApi(`/User?ckey=${override}`).then((value) => {
+        setLoading(false);
+        if (value.status == 404) {
+          global?.updateAndShowToast("Failed to find user.");
+          if (close) {
+            close();
           }
-        })
-      );
+        } else {
+          value.json().then((json) => {
+            setLoading(false);
+            setUserData(json);
+          });
+        }
+      });
     },
     [setLoading, setUserData, close, global]
   );
@@ -583,9 +584,7 @@ const AddNote = (props: { player: Player }) => {
 };
 
 const NOTE_MERIT = 2;
-const NOTE_COMMANDER = 3;
-const NOTE_SYNTHETIC = 4;
-const NOTE_YAUTJA = 5;
+const NOTE_WHITELIST = 3;
 
 const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
   const { note, displayNoted } = props;
@@ -606,14 +605,8 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
     case NOTE_MERIT:
       tag = <ColoredText color="#9e3dff">[MERIT]</ColoredText>;
       break;
-    case NOTE_COMMANDER:
-      tag = <ColoredText color="#324da5">[COMMANDER]</ColoredText>;
-      break;
-    case NOTE_SYNTHETIC:
-      tag = <ColoredText color="#39e7a4">[SYNTHETIC]</ColoredText>;
-      break;
-    case NOTE_YAUTJA:
-      tag = <ColoredText color="#114e11">[YAUTJA]</ColoredText>;
+    case NOTE_WHITELIST:
+      tag = <ColoredText color="#324da5">[WHITELIST]</ColoredText>;
       break;
   }
 
