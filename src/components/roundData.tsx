@@ -31,7 +31,7 @@ export const RoundData: React.FC = () => {
         value.json().then((json) => setRoundData(json.data))
       );
     }
-  });
+  }, [roundData, setRoundData]);
 
   if (!roundData) {
     return <div>Loading...</div>;
