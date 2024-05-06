@@ -12,7 +12,7 @@ export type LoginTriplet = {
 
 export type ConnectionHistory = {
   triplets?: LoginTriplet[],
-  allCkeys: string[],
-  allCids: string[],
-  allIps: string[]
+  allCkeys?: string[],
+  allCids?: string[],
+  allIps?: string[]
 }

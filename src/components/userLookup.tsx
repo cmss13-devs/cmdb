@@ -389,20 +389,26 @@ const ConnectionTypeDetails = (props: {
   return (
     <div className="flex flex-col">
       <div className="flex flex-row justify-center gap-1">
-        <Expand
-          label={"View All CKEYs"}
-          value={connectionData.allCkeys.join(", ")}
-        />
-        -
-        <Expand
-          label={"View All CIDs"}
-          value={connectionData.allCids.join(", ")}
-        />
-        -
-        <Expand
-          label={"View All IPs"}
-          value={connectionData.allIps.join(", ")}
-        />
+        {!!connectionData.allCkeys && (
+          <Expand
+            label={"View All CKEYs"}
+            value={connectionData.allCkeys.join(", ")}
+          />
+        )}
+        {!!connectionData.allCkeys && !!connectionData.allCids && <div>-</div>}
+        {!!connectionData.allCids && (
+          <Expand
+            label={"View All CIDs"}
+            value={connectionData.allCids.join(", ")}
+          />
+        )}
+        {!!connectionData.allCids && !!connectionData.allIps && <div>-</div>}
+        {!!connectionData.allIps && (
+          <Expand
+            label={"View All IPs"}
+            value={connectionData.allIps.join(", ")}
+          />
+        )}
       </div>
       {connectionData.triplets && (
         <TripletList triplets={connectionData.triplets} />
