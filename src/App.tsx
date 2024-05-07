@@ -1,5 +1,4 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
-import "./App.css";
 import { LookupMenu } from "./components/userLookup";
 import { IpLookup } from "./components/ipLookup";
 import { GlobalContext, User } from "./types/global";
@@ -63,7 +62,7 @@ export default function App(): React.ReactElement {
 
             <div
               onClick={() => setStickyMenu(true)}
-              className={"border border-white p-3 cursor-pointer grow"}
+              className={"border border-white p-3 cursor-pointer grow clicky"}
             >
               Sticky Menu
             </div>
@@ -107,7 +106,7 @@ const LookupOption = (props: LookupProps) => {
   return (
     <>
       <div
-        className="border border-white p-3 cursor-pointer grow"
+        className="border border-white p-3 cursor-pointer grow clicky"
         onClick={() => {
           setSelected(true);
           clearTimeout(timer);

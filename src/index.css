@@ -91,3 +91,15 @@ input {
   background-color: #3B3B3B;
   color: #fff;
 }
+
+.clicky {
+  box-shadow: 6px 6px #377E7F;
+}
+
+.clicky:hover {
+  box-shadow: unset;
+  position:relative;
+  right: -6px;
+  bottom: -6px;
+}
+

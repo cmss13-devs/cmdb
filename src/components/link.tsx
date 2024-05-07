@@ -10,7 +10,9 @@ export const Link: React.FC<LinkType> = (props: LinkType) => {
 
   return (
     <div
-      className={`cursor-pointer text-blue-600 inline hover:underline ${className}`}
+      className={`cursor-pointer text-blue-600 inline hover:underline ${
+        className ?? ""
+      }`}
       {...rest}
     >
       {children}

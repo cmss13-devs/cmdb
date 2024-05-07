@@ -1,14 +1,8 @@
-import React, {
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Stickyban } from "../types/stickyban";
 import { Link } from "./link";
 import { Dialog } from "./dialog";
 import { StickybanModal } from "./stickybanModal";
-import { offset, useFloating } from "@floating-ui/react";
 import { GlobalContext } from "../types/global";
 import { callApi } from "../helpers/api";
 
@@ -52,17 +46,7 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
                 {getText()} has active stickybans.
               </Link>
             </div>
-            {ckey && (
-              <Tooltip
-                tooltip={
-                  "This will whitelist the user against all matching stickybans."
-                }
-              >
-                <div className="border border-white p-1">
-                  <Whitelist ckey={ckey} />
-                </div>
-              </Tooltip>
-            )}
+            {ckey && <Whitelist ckey={ckey} />}
           </div>
         </div>
       </div>
@@ -74,10 +58,6 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
     </>
   );
 };
-
-interface TooltipProps extends PropsWithChildren {
-  tooltip: string;
-}
 
 const Whitelist = (props: { ckey: string }) => {
   const [open, setOpen] = useState(false);
@@ -105,7 +85,12 @@ const Whitelist = (props: { ckey: string }) => {
 
   return (
     <>
-      <Link onClick={() => setOpen(true)}>Whitelist?</Link>
+      <Link
+        onClick={() => setOpen(true)}
+        className="p-2 border border-white border-dashed"
+      >
+        Whitelist?
+      </Link>
       {open && (
         <Dialog open={open} toggle={() => setOpen(false)}>
           <div className="flex flex-col">
@@ -121,36 +106,6 @@ const Whitelist = (props: { ckey: string }) => {
           </div>
         </Dialog>
       )}
-    </>
-  );
-};
-
-const Tooltip = (props: TooltipProps) => {
-  const [hovered, setHovered] = useState(false);
-
-  const { refs, floatingStyles } = useFloating({
-    placement: "top",
-    middleware: [offset(5)],
-  });
-
-  return (
-    <>
-      {hovered && (
-        <div
-          ref={refs.setFloating}
-          style={floatingStyles}
-          className="foreground border-white border"
-        >
-          {props.tooltip}
-        </div>
-      )}
-      <div
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        ref={refs.setReference}
-      >
-        {props.children}
-      </div>
     </>
   );
 };
