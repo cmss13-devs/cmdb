@@ -103,3 +103,7 @@ input {
   bottom: -6px;
 }
 
+.expand {
+  max-height: 700px !important;
+  overflow: auto !important;
+}

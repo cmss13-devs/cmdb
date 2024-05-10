@@ -14,7 +14,7 @@ export const Expand: React.FC<ExpandProps> = (props: ExpandProps) => {
     <>
       <Link onClick={() => setOpen(true)}>{props.label}</Link>
       {open && (
-        <Dialog open={open} toggle={() => setOpen(false)}>
+        <Dialog open={open} toggle={() => setOpen(false)} className="expand">
           <div className="pt-10">{props.value}</div>
         </Dialog>
       )}
