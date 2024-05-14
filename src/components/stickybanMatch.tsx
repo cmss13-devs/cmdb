@@ -1,10 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Stickyban } from "../types/stickyban";
 import { Link } from "./link";
 import { Dialog } from "./dialog";
 import { StickybanModal } from "./stickybanModal";
 import { GlobalContext } from "../types/global";
 import { callApi } from "../helpers/api";
+import { offset, useFloating } from "@floating-ui/react";
 
 export const StickybanMatch: React.FC<StickybanMatch> = (
   props: StickybanMatch
@@ -46,7 +52,15 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
                 {getText()} has active stickybans.
               </Link>
             </div>
-            {ckey && <Whitelist ckey={ckey} />}
+            {ckey && (
+              <Tooltip
+                tooltip={
+                  "This will whitelist the user against all matching stickybans."
+                }
+              >
+                <Whitelist ckey={ckey} />
+              </Tooltip>
+            )}
           </div>
         </div>
       </div>
@@ -114,4 +128,38 @@ type StickybanMatch = {
   ip?: string;
   ckey?: string;
   cid?: string;
+};
+
+interface TooltipProps extends PropsWithChildren {
+  tooltip: string;
+}
+
+const Tooltip = (props: TooltipProps) => {
+  const [hovered, setHovered] = useState(false);
+
+  const { refs, floatingStyles } = useFloating({
+    placement: "top",
+    middleware: [offset(5)],
+  });
+
+  return (
+    <>
+      {hovered && (
+        <div
+          ref={refs.setFloating}
+          style={floatingStyles}
+          className="foreground border-white border"
+        >
+          {props.tooltip}
+        </div>
+      )}
+      <div
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        ref={refs.setReference}
+      >
+        {props.children}
+      </div>
+    </>
+  );
 };
