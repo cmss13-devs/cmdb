@@ -273,67 +273,79 @@ const UserDetailsModal = (props: { player: Player }) => {
   const global = useContext(GlobalContext);
 
   return (
-    <div className="flex flex-col items-center md:items-start md:flex-row gap-3 justify-center">
-      <div className="flex flex-row gap-3">
-        <div className="underline">
-          <div>Last Seen:</div>
-          <div>Last Known CID:</div>
-          <div>Last Known IP:</div>
-        </div>
-
-        <div>
-          <div>{lastLogin}</div>
-          <div>
-            <DetailedCid cid={lastKnownCid} />
+    <>
+      <div className="flex flex-col items-center md:items-start md:flex-row gap-3 justify-center">
+        <div className="flex flex-row gap-3">
+          <div className="underline">
+            <div>Last Seen:</div>
+            <div>Last Known CID:</div>
+            <div>Last Known IP:</div>
           </div>
+
           <div>
-            <DetailedIp ip={lastKnownIp} />
+            <div>{lastLogin}</div>
+            <div>
+              <DetailedCid cid={lastKnownCid} />
+            </div>
+            <div>
+              <DetailedIp ip={lastKnownIp} />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex flex-row gap-3">
-        <div className="underline">
-          <div>BYOND Account Age:</div>
-          <div>First Join Date:</div>
-          <div>Discord ID:</div>
-        </div>
+        <div className="flex flex-row gap-3">
+          <div className="underline">
+            <div>BYOND Account Age:</div>
+            <div>First Join Date:</div>
+            <div>Discord ID:</div>
+          </div>
 
-        <div>
-          <div>{byondAccountAge ?? "Unknown"}</div>
-          <div>{firstJoinDate ?? "Unknown"}</div>
-          {discordId ? (
-            <Link
-              onClick={() => {
-                global?.updateAndShowToast("Copied to clipboard.");
-                navigator.clipboard.writeText(`${discordId}`);
-              }}
-            >
-              {discordId}
-            </Link>
-          ) : (
-            <div>Not Linked</div>
-          )}
+          <div>
+            <div>{byondAccountAge ?? "Unknown"}</div>
+            <div>{firstJoinDate ?? "Unknown"}</div>
+            {discordId ? (
+              <Link
+                onClick={() => {
+                  global?.updateAndShowToast("Copied to clipboard.");
+                  navigator.clipboard.writeText(`${discordId}`);
+                }}
+              >
+                {discordId}
+              </Link>
+            ) : (
+              <div>Not Linked</div>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <ConnectionType
+            label={"View Full Connection History"}
+            path={"/Connections/Ckey?ckey="}
+            value={ckey}
+          />
+          <ConnectionType
+            label={"View Full Connections By All CIDs"}
+            path={"/Connections/FullByAllCid?ckey="}
+            value={ckey}
+          />
+          <ConnectionType
+            label={"View Full Connections By All IPs"}
+            path={"/Connections/FullByAllIps?ckey="}
+            value={ckey}
+          />
         </div>
       </div>
-      <div className="flex flex-col">
-        <ConnectionType
-          label={"View Full Connection History"}
-          path={"/Connections/Ckey?ckey="}
-          value={ckey}
-        />
-        <ConnectionType
-          label={"View Full Connections By All CIDs"}
-          path={"/Connections/FullByAllCid?ckey="}
-          value={ckey}
-        />
-        <ConnectionType
-          label={"View Full Connections By All IPs"}
-          path={"/Connections/FullByAllIps?ckey="}
-          value={ckey}
-        />
-      </div>
-    </div>
+      {player.whitelistStatus && (
+        <div className="flex flex-col">
+          <div className="flex flex-row justify-center gap-2">
+            <Expand
+              value={player.whitelistStatus.split("|").join("\n")}
+              label="View Role Whitelists"
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
