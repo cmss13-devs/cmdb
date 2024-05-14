@@ -91,7 +91,7 @@ const ExpandDetails = (props: { stickyban: Stickyban }) => {
     <>
       <Link onClick={() => check()}>Details</Link>
       {open && (
-        <Dialog open={!!cids} toggle={() => setOpen(false)}>
+        <Dialog open={!!cids} toggle={() => setOpen(false)} className="expand">
           <div className="flex flex-col gap-2 pt-10">
             <div>CIDs: {cids && cids.map((cid) => cid.cid).join(", ")}</div>
             <div>
