@@ -21,7 +21,7 @@ export const Dialog: React.FC<DialogPropsType> = (props: DialogPropsType) => {
       <dialog
         {...rest}
         open={open}
-        className={`w-full md:w-11/12 py-10 border border-themed foreground z-20 px-10 overflow-auto max-h-full ${
+        className={`text-white w-full md:w-11/12 py-10 border border-themed foreground z-20 px-10 overflow-auto max-h-full ${
           className ?? ""
         } md:min-w-[600px]`}
         style={{
