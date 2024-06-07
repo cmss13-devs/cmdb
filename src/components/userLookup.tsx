@@ -19,15 +19,21 @@ import { StickybanMatch } from "./stickybanMatch";
 import { callApi } from "../helpers/api";
 
 type ActiveLookupType = {
-  updateUser: (string?: string) => void;
+  updateUser: (_args: UpdateUserArguments) => void;
 };
 
 const ActiveLookupContext = createContext<ActiveLookupType | null>(null);
 
 interface LookupMenuProps extends PropsWithChildren {
   value?: string;
+  discordId?: string;
   close?: () => void;
 }
+
+type UpdateUserArguments = {
+  userCkey?: string;
+  userDiscordId?: string;
+};
 
 export const LookupMenu: React.FC<LookupMenuProps> = (
   props: LookupMenuProps
@@ -37,12 +43,16 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const [loading, setLoading] = useState(false);
   const global = useContext(GlobalContext);
 
-  const { value, close } = props;
+  const { value, discordId, close } = props;
 
   const updateUser = useCallback(
-    (override?: string) => {
+    (args: UpdateUserArguments) => {
+      const { userCkey, userDiscordId } = args;
+
       setLoading(true);
-      callApi(`/User?ckey=${override}`).then((value) => {
+      callApi(
+        userCkey ? `/User?ckey=${userCkey}` : `/User?discordId=${userDiscordId}`
+      ).then((value) => {
         setLoading(false);
         if (value.status == 404) {
           global?.updateAndShowToast("Failed to find user.");
@@ -61,10 +71,15 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   );
 
   useEffect(() => {
-    if (value && !userData) {
-      updateUser(value);
+    if (discordId && !userData) {
+      updateUser({ userDiscordId: discordId });
+      return;
     }
-  }, [value, userData, updateUser]);
+    if (value && !userData) {
+      updateUser({ userCkey: value });
+      return;
+    }
+  }, [value, userData, discordId, updateUser]);
 
   return (
     <ActiveLookupContext.Provider value={{ updateUser: updateUser }}>
@@ -73,7 +88,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
           className="flex flex-row justify-center gap-3"
           onSubmit={(event) => {
             event.preventDefault();
-            updateUser();
+            updateUser({});
           }}
         >
           <label htmlFor="ckey">User: </label>
@@ -538,7 +553,7 @@ const AddNote = (props: { player: Player }) => {
       }),
     }).then((response) => {
       response.text().then((response) => {
-        refetch?.updateUser(ckey);
+        refetch?.updateUser({ userCkey: ckey });
         setAdding(false);
         if (response) {
           global?.updateAndShowToast(`Added note to ${ckey}.`);
@@ -716,7 +731,10 @@ const RichUser = (props: RichUserProps) => {
   const lookup = useContext(ActiveLookupContext);
 
   return (
-    <Link onClick={() => lookup?.updateUser(props.name)} className="px-1">
+    <Link
+      onClick={() => lookup?.updateUser({ userCkey: props.name })}
+      className="px-1"
+    >
       {props.name}
     </Link>
   );

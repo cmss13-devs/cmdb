@@ -54,10 +54,12 @@ export default function App(): React.ReactElement {
               <div className="text-3xl underline text-center">[cmdb]</div>
               {user && <div>{user.preferredUsername}</div>}
             </div>
+
             <div className="flex flex-col md:flex-row gap-3">
               <LookupOption type="lookup">Lookup User</LookupOption>
               <LookupOption type="ip">Lookup IP</LookupOption>
               <LookupOption type="cid">Lookup CID</LookupOption>
+              <LookupOption type="discordId">Lookup Discord</LookupOption>
             </div>
 
             <div
@@ -88,7 +90,7 @@ export default function App(): React.ReactElement {
 }
 
 interface LookupProps extends PropsWithChildren {
-  type: "lookup" | "ip" | "cid";
+  type: "lookup" | "ip" | "cid" | "discordId";
 }
 
 const LookupOption = (props: LookupProps) => {
@@ -153,6 +155,9 @@ const LookupOption = (props: LookupProps) => {
           className="md:w-11/12 md:h-11/12"
         >
           {type == "lookup" && <LookupMenu value={value} close={close} />}
+          {type == "discordId" && (
+            <LookupMenu discordId={value} close={close} />
+          )}
           {type == "cid" && <CidLookup initialCid={value} close={close} />}
           {type == "ip" && <IpLookup initialIp={value} close={close} />}
         </Dialog>
