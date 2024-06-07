@@ -83,7 +83,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
 
   return (
     <ActiveLookupContext.Provider value={{ updateUser: updateUser }}>
-      {!value && (
+      {!value && !discordId && (
         <form
           className="flex flex-row justify-center gap-3"
           onSubmit={(event) => {
