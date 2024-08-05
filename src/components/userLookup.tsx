@@ -48,10 +48,12 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const updateUser = useCallback(
     (args: UpdateUserArguments) => {
       const { userCkey, userDiscordId } = args;
-
-      setLoading(true);
+      const re = /[\\^]|[^a-z0-9@]/;
+      const userCkeyChecked = userCkey?.toLowerCase().replace(re, "");
       callApi(
-        userCkey ? `/User?ckey=${userCkey}` : `/User?discordId=${userDiscordId}`
+        userCkeyChecked
+          ? `/User?ckey=${userCkeyChecked}`
+          : `/User?discordId=${userDiscordId}`
       ).then((value) => {
         setLoading(false);
         if (value.status == 404) {
