@@ -6,10 +6,13 @@ import { CidLookup } from "./components/cidLookup";
 import { RoundData } from "./components/roundData";
 import { Dialog } from "./components/dialog";
 import { Stickybans } from "./components/stickybans";
+import { Tickets } from "./components/tickets";
 
 export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>();
   const [stickyMenu, setStickyMenu] = useState(false);
+  const [ticketMenu, setTicketMenu] = useState(false);
+
   const [user, setUser] = useState<User | undefined>();
 
   const displayToast = (string: string) => {
@@ -77,6 +80,23 @@ export default function App(): React.ReactElement {
                 <Stickybans />
               </Dialog>
             )}
+            {ticketMenu && (
+              <Dialog
+                open={ticketMenu}
+                toggle={() => setTicketMenu(false)}
+                className="w-11/12"
+              >
+                <Tickets />
+              </Dialog>
+            )}
+            <div
+              onClick={() => {
+                setTicketMenu(true);
+              }}
+              className="border border-white p-3 cursor-pointer grow clicky"
+            >
+              Ticket Menu
+            </div>
 
             <RoundData />
           </div>
