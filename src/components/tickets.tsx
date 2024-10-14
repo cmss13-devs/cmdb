@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { callApi } from "../helpers/api";
 import { Round } from "../types/rounds";
 import { Link } from "./link";
 import { Ticket } from "../types/ticket";
 import { Dialog } from "./dialog";
 import { NameExpand } from "./nameExpand";
+import { GlobalContext } from "../types/global";
 
 export const Tickets: React.FC = () => {
   const [lookupRound, setLookupRound] = useState<number | undefined>();
 
   const [acquiredData, setAcquiredData] = useState<Ticket[] | undefined>();
+
+  const global = useContext(GlobalContext);
 
   const updateLookup = (id?: number) => {
     const round = id || lookupRound;
@@ -17,9 +20,13 @@ export const Tickets: React.FC = () => {
     if (!round) return;
 
     callApi(`/Ticket/${round}`).then((value) =>
-      value.json().then((json) => {
-        setAcquiredData(json);
-      })
+      value.status == 404
+        ? global?.updateAndShowToast(
+            "No tickets found for the provided round ID."
+          )
+        : value.json().then((json) => {
+            setAcquiredData(json);
+          })
     );
   };
 
