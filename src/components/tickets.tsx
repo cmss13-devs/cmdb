@@ -32,11 +32,6 @@ export const Tickets: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {acquiredData && (
-        <Dialog open={!!acquiredData} toggle={() => setAcquiredData(undefined)}>
-          <RoundTickets round={lookupRound} tickets={acquiredData} />
-        </Dialog>
-      )}
       <RecentRounds updateRound={updateLookup} />
       <form
         className="flex flex-row justify-center gap-3"
@@ -56,6 +51,9 @@ export const Tickets: React.FC = () => {
           }}
         ></input>
       </form>
+      {acquiredData && (
+        <RoundTickets round={lookupRound} tickets={acquiredData} />
+      )}
     </div>
   );
 };
@@ -101,7 +99,9 @@ const RoundTickets = (props: { round?: number; tickets: Ticket[] }) => {
 
   return (
     <>
-      <div className="pl-7">Round {props.round}</div>
+      <div className="flex flex-row justify-center text-xl">
+        Round {props.round}
+      </div>
       <div className="flex flex-col pt-3">
         {distinctTickets.map((ticket) => (
           <div key={ticket.id}>
