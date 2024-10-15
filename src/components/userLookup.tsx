@@ -17,7 +17,7 @@ import { LinkColor } from "./link";
 import { Expand } from "./expand";
 import { StickybanMatch } from "./stickybanMatch";
 import { callApi } from "../helpers/api";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { NameExpand } from "./nameExpand";
 
 type ActiveLookupType = {
@@ -90,6 +90,8 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
     }
   }, [value, userData, discordId, updateUser, potentialUser, user]);
 
+  const nav = useNavigate();
+
   return (
     <ActiveLookupContext.Provider value={{ updateUser: updateUser }}>
       {!value && !discordId && (
@@ -97,7 +99,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
           className="flex flex-row justify-center gap-3"
           onSubmit={(event) => {
             event.preventDefault();
-            updateUser({ userCkey: user });
+            nav(`/user/${user}`);
           }}
         >
           <label htmlFor="ckey">User: </label>
