@@ -85,7 +85,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
       updateUser({ userCkey: value });
       return;
     }
-    if (potentialUser && (!userData || user != potentialUser)) {
+    if (potentialUser && (!userData || userData.ckey != potentialUser)) {
       updateUser({ userCkey: potentialUser as string });
     }
   }, [value, userData, discordId, updateUser, potentialUser, user]);
