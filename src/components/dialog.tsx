@@ -21,7 +21,7 @@ export const Dialog: React.FC<DialogPropsType> = (props: DialogPropsType) => {
       <dialog
         {...rest}
         open={open}
-        className={`text-white w-full md:w-11/12 py-10 border border-themed foreground z-20 px-10 max-h-full ${
+        className={`text-white w-full md:w-11/12 py-10 border border-themed foreground z-20 px-10 max-h-full overflow-auto ${
           className ?? ""
         } md:min-w-[600px]`}
         style={{
@@ -29,7 +29,6 @@ export const Dialog: React.FC<DialogPropsType> = (props: DialogPropsType) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          minHeight: "fit-content",
           ...style,
         }}
       >
