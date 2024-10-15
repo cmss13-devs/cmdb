@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "./link";
+import { LinkColor } from "./link";
 import { Dialog } from "./dialog";
 
 type ExpandProps = {
@@ -12,7 +12,7 @@ export const Expand: React.FC<ExpandProps> = (props: ExpandProps) => {
 
   return (
     <>
-      <Link onClick={() => setOpen(true)}>{props.label}</Link>
+      <LinkColor onClick={() => setOpen(true)}>{props.label}</LinkColor>
       {open && (
         <Dialog open={open} toggle={() => setOpen(false)} className="expand">
           <div className="pt-10">{props.value}</div>

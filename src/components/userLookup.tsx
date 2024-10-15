@@ -13,10 +13,12 @@ import { DetailedIp } from "./detailedIp";
 import { ConnectionHistory } from "../types/loginTriplet";
 import { Dialog } from "./dialog";
 import { TripletList } from "./tripletsList";
-import { Link } from "./link";
+import { LinkColor } from "./link";
 import { Expand } from "./expand";
 import { StickybanMatch } from "./stickybanMatch";
 import { callApi } from "../helpers/api";
+import { useLoaderData } from "react-router-dom";
+import { NameExpand } from "./nameExpand";
 
 type ActiveLookupType = {
   updateUser: (_args: UpdateUserArguments) => void;
@@ -72,6 +74,8 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
     [setLoading, setUserData, close, global]
   );
 
+  const potentialUser = useLoaderData();
+
   useEffect(() => {
     if (discordId && !userData) {
       updateUser({ userDiscordId: discordId });
@@ -81,7 +85,10 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
       updateUser({ userCkey: value });
       return;
     }
-  }, [value, userData, discordId, updateUser]);
+    if (potentialUser && (!userData || user != potentialUser)) {
+      updateUser({ userCkey: potentialUser as string });
+    }
+  }, [value, userData, discordId, updateUser, potentialUser, user]);
 
   return (
     <ActiveLookupContext.Provider value={{ updateUser: updateUser }}>
@@ -321,14 +328,14 @@ const UserDetailsModal = (props: { player: Player }) => {
             <div>{byondAccountAge ?? "Unknown"}</div>
             <div>{firstJoinDate ?? "Unknown"}</div>
             {discordId ? (
-              <Link
+              <LinkColor
                 onClick={() => {
                   global?.updateAndShowToast("Copied to clipboard.");
                   navigator.clipboard.writeText(`${discordId}`);
                 }}
               >
                 {discordId}
-              </Link>
+              </LinkColor>
             ) : (
               <div>Not Linked</div>
             )}
@@ -377,7 +384,7 @@ const ConnectionType = (props: {
 
   return (
     <>
-      <Link onClick={() => setOpen(true)}>{label}</Link>
+      <LinkColor onClick={() => setOpen(true)}>{label}</LinkColor>
       {open && (
         <Dialog
           open={open}
@@ -515,7 +522,7 @@ const ViewAppliedNotes = (props: { player: Player }) => {
 
   return (
     <>
-      <Link onClick={() => openDialog()}>View Applied Notes</Link>
+      <LinkColor onClick={() => openDialog()}>View Applied Notes</LinkColor>
       {notes && (
         <Dialog open={!!notes} toggle={() => setNotes(null)}>
           <div className="pt-10">
@@ -568,7 +575,7 @@ const AddNote = (props: { player: Player }) => {
 
   return (
     <>
-      <Link onClick={() => setAdding(true)}>Add Note</Link>
+      <LinkColor onClick={() => setAdding(true)}>Add Note</LinkColor>
       {adding && (
         <Dialog toggle={() => setAdding(false)} open={adding}>
           <form className="pt-10">
@@ -603,11 +610,11 @@ const AddNote = (props: { player: Player }) => {
               </div>
               <div className="flex flex-row justify-center">
                 {!confirm ? (
-                  <Link onClick={() => setConfirm(true)}>Submit</Link>
+                  <LinkColor onClick={() => setConfirm(true)}>Submit</LinkColor>
                 ) : (
-                  <Link onClick={() => send()} className="text-red-700">
+                  <LinkColor onClick={() => send()} className="text-red-700">
                     Confirm
-                  </Link>
+                  </LinkColor>
                 )}
               </div>
             </div>
@@ -655,14 +662,15 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
         {tag}
         <div className="text-wrap">{text}</div>
       </div>
-      <div className="italic flex flex-row justify-end">
+      <div className="italic flex flex-row justify-end gap-1">
         {displayNoted && (
           <div>
             to
-            <RichUser name={notedPlayerCkey} />
+            <NameExpand name={notedPlayerCkey} />
           </div>
         )}
-        by <RichUser name={notingAdminCkey} /> ({adminRank}){" "}
+        {"by"}
+        <NameExpand name={notingAdminCkey} /> ({adminRank})
         {isConfidential && "[CONFIDENTIALLY]"} on {date}
       </div>
     </div>
@@ -722,22 +730,5 @@ const JobBan = (props: { jobBan: PlayerJobBan }) => {
         by {banningAdminCkey} on {date}
       </div>
     </div>
-  );
-};
-
-interface RichUserProps extends PropsWithChildren {
-  name?: string;
-}
-
-const RichUser = (props: RichUserProps) => {
-  const lookup = useContext(ActiveLookupContext);
-
-  return (
-    <Link
-      onClick={() => lookup?.updateUser({ userCkey: props.name })}
-      className="px-1"
-    >
-      {props.name}
-    </Link>
   );
 };

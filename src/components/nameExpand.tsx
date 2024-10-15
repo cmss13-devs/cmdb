@@ -1,27 +1,19 @@
-import React, { useState } from "react";
-import { Dialog } from "./dialog";
-import { LookupMenu } from "./userLookup";
-import { Link } from "./link";
+import React from "react";
+import { LinkColor } from "./link";
+import { Link } from "react-router-dom";
 
 interface NameExpandProps {
-  name: string;
+  name?: string;
 }
 
 export const NameExpand: React.FC<NameExpandProps> = (
   props: NameExpandProps
 ) => {
-  const [open, setOpen] = useState(false);
-
   return (
     <>
-      <Link onClick={() => setOpen(true)} className="inline">
-        {props.name}
-      </Link>
-      {open && (
-        <Dialog open={open} toggle={() => setOpen(false)} className="md:w-5/6">
-          <LookupMenu value={props.name} />
-        </Dialog>
-      )}
+      <LinkColor className="inline">
+        <Link to={`/user/${props.name}`}>{props.name}</Link>
+      </LinkColor>
     </>
   );
 };

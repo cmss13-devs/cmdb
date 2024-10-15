@@ -1,11 +1,11 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from "react";
 
-type LinkType = DetailedHTMLProps<
-  HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
->;
+interface LinkType
+  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  to?: string;
+}
 
-export const Link: React.FC<LinkType> = (props: LinkType) => {
+export const LinkColor: React.FC<LinkType> = (props: LinkType) => {
   const { children, className, ...rest } = props;
 
   return (

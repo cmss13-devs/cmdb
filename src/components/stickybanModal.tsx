@@ -5,9 +5,10 @@ import {
   StickybansMatchedCkey,
   StickybansMatchedIp,
 } from "../types/stickyban";
-import { Link } from "./link";
+import { LinkColor } from "./link";
 import { Dialog } from "./dialog";
 import { callApi } from "../helpers/api";
+import { Expand } from "./expand";
 
 type StickybanModalProps = {
   stickybans: Stickyban[];
@@ -20,7 +21,8 @@ export const StickybanModal: React.FC<StickybanModalProps> = (
 
   return (
     <div className="pt-10">
-      <div className="overflow-auto max-h-[800px]">
+      <div className="flex flex-row justify-center text-xl">Stickyban Menu</div>
+      <div className="overflow-auto max-h-[800px] border-white border p-3">
         <table className="w-full">
           <tbody>
             <tr>
@@ -47,7 +49,16 @@ const StickybanEntry = (props: { stickyban: Stickyban }) => {
     <tr className={`${stickyban.active ? "" : "text-gray-500"}`}>
       <td className="border p-2">{stickyban.identifier}</td>
       <td className="border p-2">{stickyban.message}</td>
-      <td className="border p-2">{stickyban.reason.trim()}</td>
+      <td className="border p-2">
+        {stickyban.reason.trim().length > 30 ? (
+          <span>
+            <span>{stickyban.reason.trim().substring(0, 27)}</span>
+            <Expand label={"..."} value={stickyban.reason.trim()} />
+          </span>
+        ) : (
+          stickyban.reason.trim()
+        )}
+      </td>
       <td className="border p-2">{stickyban.adminCkey ?? "AdminBot"}</td>
       <td className="border p-2">
         <ExpandDetails stickyban={stickyban} />
@@ -89,7 +100,7 @@ const ExpandDetails = (props: { stickyban: Stickyban }) => {
 
   return (
     <>
-      <Link onClick={() => check()}>Details</Link>
+      <LinkColor onClick={() => check()}>Details</LinkColor>
       {open && (
         <Dialog open={!!cids} toggle={() => setOpen(false)} className="expand">
           <div className="flex flex-col gap-2 pt-10">

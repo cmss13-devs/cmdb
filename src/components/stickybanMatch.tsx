@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 import { Stickyban } from "../types/stickyban";
-import { Link } from "./link";
+import { LinkColor } from "./link";
 import { Dialog } from "./dialog";
 import { StickybanModal } from "./stickybanModal";
 import { GlobalContext } from "../types/global";
@@ -48,9 +48,9 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
         <div className="foreground p-3 h-full flex flex-col justify-center">
           <div className="flex flex-row gap-3">
             <div className="flex flex-col justify-center">
-              <Link onClick={() => setOpen(true)}>
+              <LinkColor onClick={() => setOpen(true)}>
                 {getText()} has active stickybans.
-              </Link>
+              </LinkColor>
             </div>
             {ckey && (
               <Tooltip
@@ -99,24 +99,24 @@ const Whitelist = (props: { ckey: string }) => {
 
   return (
     <>
-      <Link
+      <LinkColor
         onClick={() => setOpen(true)}
         className="p-2 border border-white border-dashed"
       >
         Whitelist?
-      </Link>
+      </LinkColor>
       {open && (
         <Dialog open={open} toggle={() => setOpen(false)}>
           <div className="flex flex-col">
             <div className="pt-10 flex flex-row justify-center">
               Confirm whitelisting {ckey}?
             </div>
-            <Link
+            <LinkColor
               onClick={() => doWhitelist()}
               className="flex flex-row justify-center"
             >
               Whitelist
-            </Link>
+            </LinkColor>
           </div>
         </Dialog>
       )}

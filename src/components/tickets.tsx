@@ -1,38 +1,60 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { callApi } from "../helpers/api";
 import { Round } from "../types/rounds";
-import { Link } from "./link";
-import { Ticket } from "../types/ticket";
+import { LinkColor } from "./link";
+import { Ticket, TicketLoader } from "../types/ticket";
 import { Dialog } from "./dialog";
 import { NameExpand } from "./nameExpand";
 import { GlobalContext } from "../types/global";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 
 export const Tickets: React.FC = () => {
   const [lookupRound, setLookupRound] = useState<number | undefined>();
 
   const [acquiredData, setAcquiredData] = useState<Ticket[] | undefined>();
 
+  const [loading, setLoading] = useState(false);
+
   const global = useContext(GlobalContext);
 
-  const updateLookup = (id?: number) => {
-    const round = id || lookupRound;
-    setLookupRound(round);
-    if (!round) return;
+  const updateLookup = useCallback(
+    (id?: number) => {
+      const round = id || lookupRound;
+      setLookupRound(round);
+      if (!round) return;
 
-    callApi(`/Ticket/${round}`).then((value) =>
-      value.status == 404
-        ? global?.updateAndShowToast(
-            "No tickets found for the provided round ID."
-          )
-        : value.json().then((json) => {
+      setLoading(true);
+
+      callApi(`/Ticket/${round}`).then((value) => {
+        if (value.status == 404) {
+          global?.updateAndShowToast(
+            "No tickets found or the provided round ID."
+          );
+        } else {
+          value.json().then((json) => {
             setAcquiredData(json);
-          })
-    );
-  };
+          });
+        }
+        setLoading(false);
+      });
+    },
+    [setLookupRound, setAcquiredData, global, lookupRound]
+  );
+
+  const { round } = useLoaderData() as TicketLoader;
+
+  useEffect(() => {
+    if (round && parseInt(round) != lookupRound) {
+      setAcquiredData(undefined);
+    }
+    if (round && !acquiredData) {
+      updateLookup(parseInt(round as string));
+    }
+  }, [lookupRound, round, acquiredData, updateLookup]);
 
   return (
     <div className="flex flex-col gap-3">
-      <RecentRounds updateRound={updateLookup} />
+      <RecentRounds />
       <form
         className="flex flex-row justify-center gap-3"
         onSubmit={(event) => {
@@ -51,6 +73,9 @@ export const Tickets: React.FC = () => {
           }}
         ></input>
       </form>
+      {loading && (
+        <div className="flex flex-row justify-center">Loading...</div>
+      )}
       {acquiredData && (
         <RoundTickets round={lookupRound} tickets={acquiredData} />
       )}
@@ -58,7 +83,7 @@ export const Tickets: React.FC = () => {
   );
 };
 
-const RecentRounds = (props: { updateRound: (_id: number) => void }) => {
+const RecentRounds = () => {
   const [rounds, setRecentRounds] = useState<Round[] | null>(null);
 
   useEffect(() => {
@@ -77,7 +102,9 @@ const RecentRounds = (props: { updateRound: (_id: number) => void }) => {
     <div className="flex flex-row justify-center gap-2">
       {rounds.map((round) => (
         <div key={round.id}>
-          <Link onClick={() => props.updateRound(round.id)}>{round.id}</Link>
+          <LinkColor>
+            <Link to={`/ticket/${round.id}`}>{round.id}</Link>
+          </LinkColor>
         </div>
       ))}
     </div>
@@ -89,6 +116,19 @@ const RoundTickets = (props: { round?: number; tickets: Ticket[] }) => {
 
   const [ticket, setTicket] = useState<number | undefined>();
 
+  const { ticketNum } = useLoaderData() as TicketLoader;
+
+  useEffect(() => {
+    if (ticketNum && !ticket) {
+      setTicket(parseInt(ticketNum));
+    }
+    if (!ticketNum && ticket) {
+      setTicket(undefined);
+    }
+  }, [ticket, ticketNum, setTicket]);
+
+  const nav = useNavigate();
+
   const distinctNums: number[] = [];
   const distinctTickets: Ticket[] = [];
   tickets.forEach((ticket) => {
@@ -98,20 +138,20 @@ const RoundTickets = (props: { round?: number; tickets: Ticket[] }) => {
   });
 
   return (
-    <>
+    <div className="border p-2 rounded border-[#3f3f3f] shadow-lg">
       <div className="flex flex-row justify-center text-xl">
         Round {props.round}
       </div>
-      <div className="flex flex-col pt-3">
+      <div className="flex flex-col pt-3 gap-2">
         {distinctTickets.map((ticket) => (
-          <div key={ticket.id}>
-            <Link
+          <div key={ticket.id} className="border-t pt-1 border-[#3f3f3f]">
+            <LinkColor
               onClick={() => {
-                setTicket(ticket.ticketId);
+                nav(`/ticket/${props.round}/${ticket.ticketId}`);
               }}
             >
               Ticket #{ticket.ticketId}
-            </Link>
+            </LinkColor>
             : <NameExpand name={ticket.sender} />
             {ticket.recipient && (
               <>
@@ -124,11 +164,16 @@ const RoundTickets = (props: { round?: number; tickets: Ticket[] }) => {
         ))}
       </div>
       {ticket && (
-        <Dialog open={!!ticket} toggle={() => setTicket(undefined)}>
+        <Dialog
+          open={!!ticket}
+          toggle={() => {
+            nav("..", { relative: "path" });
+          }}
+        >
           <TicketDetail tickets={tickets} ticket={ticket} />
         </Dialog>
       )}
-    </>
+    </div>
   );
 };
 

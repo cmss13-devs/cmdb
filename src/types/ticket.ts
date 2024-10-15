@@ -9,3 +9,8 @@ export type Ticket = {
   time: string;
   urgent: boolean;
 }
+
+export type TicketLoader = {
+  round: string,
+  ticketNum: string,
+}
