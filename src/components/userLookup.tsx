@@ -495,7 +495,7 @@ const NotesList = (props: { notes?: PlayerNote[]; displayNoted?: boolean }) => {
   const { notes, displayNoted } = props;
 
   return (
-    <div className="border-white border-2 p-3 flex flex-col gap-3 h-96 overflow-auto">
+    <div className="border-[#3f3f3f] border-2 p-3 flex flex-col gap-3 h-96 overflow-auto">
       {notes
         ?.filter((note) => note.text)
         .map((note) => (
@@ -705,7 +705,7 @@ const UserJobBansModal = (props: { player: Player }) => {
   return (
     <div className="flex flex-col">
       <div className="text-2xl">Job Bans:</div>
-      <div className="border-white border-2 p-3 flex flex-col gap-3">
+      <div className="border-[#3f3f3f] border-2 p-3 flex flex-col gap-3">
         {jobBans?.map((jobBan) => (
           <JobBan jobBan={jobBan} key={jobBan.id} />
         ))}

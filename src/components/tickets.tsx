@@ -186,7 +186,7 @@ const TicketDetail = (props: { tickets: Ticket[]; ticket: number }) => {
     <div className="flex flex-col pt-7 gap-2">
       {relevantTickets.map((ticket) => (
         <div key={ticket.id}>
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-between border-b pt-1 border-[#555555]">
             <div>
               <NameExpand name={ticket.sender} />
               {ticket.recipient && (

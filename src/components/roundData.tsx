@@ -95,7 +95,7 @@ interface InfoBoxProps extends PropsWithChildren {
 
 const InfoBox = (props: InfoBoxProps) => {
   return (
-    <div className="p-5 border-white border flex flex-col gap-2 grow">
+    <div className="p-5 border-[#3f3f3f] border flex flex-col gap-2 grow">
       <div className="text-3xl">{props.label}</div>
       {props.children}
     </div>

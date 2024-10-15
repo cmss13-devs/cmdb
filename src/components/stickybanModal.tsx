@@ -22,9 +22,9 @@ export const StickybanModal: React.FC<StickybanModalProps> = (
   return (
     <div className="pt-10">
       <div className="flex flex-row justify-center text-xl">Stickyban Menu</div>
-      <div className="overflow-auto max-h-[800px] border-white border p-3">
+      <div className="overflow-auto max-h-[800px] border-[#3f3f3f] border p-3">
         <table className="w-full">
-          <tbody>
+          <tbody className="">
             <tr>
               <th>Identifier</th>
               <th>Message</th>
@@ -47,9 +47,13 @@ const StickybanEntry = (props: { stickyban: Stickyban }) => {
 
   return (
     <tr className={`${stickyban.active ? "" : "text-gray-500"}`}>
-      <td className="border p-2">{stickyban.identifier}</td>
-      <td className="border p-2">{stickyban.message}</td>
-      <td className="border p-2">
+      <td className="border-r border-b p-2 border-[#3f3f3f]">
+        {stickyban.identifier}
+      </td>
+      <td className="border-r border-b p-2 border-[#3f3f3f]">
+        {stickyban.message}
+      </td>
+      <td className="border-r border-b p-2 border-[#3f3f3f]">
         {stickyban.reason.trim().length > 30 ? (
           <span>
             <span>{stickyban.reason.trim().substring(0, 27)}</span>
@@ -59,8 +63,10 @@ const StickybanEntry = (props: { stickyban: Stickyban }) => {
           stickyban.reason.trim()
         )}
       </td>
-      <td className="border p-2">{stickyban.adminCkey ?? "AdminBot"}</td>
-      <td className="border p-2">
+      <td className="border-r border-b p-2 border-[#3f3f3f]">
+        {stickyban.adminCkey ?? "AdminBot"}
+      </td>
+      <td className="p-2 border-b border-[#3f3f3f]">
         <ExpandDetails stickyban={stickyban} />
       </td>
     </tr>

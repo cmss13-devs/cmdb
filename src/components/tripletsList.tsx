@@ -12,7 +12,7 @@ export const TripletList: React.FC<TripletListProps> = (
   props: TripletListProps
 ) => {
   return (
-    <div className="flex flex-col border-white border p-5 m-3 gap-1 max-h-[400px] md:max-h-[700px] overflow-auto">
+    <div className="flex flex-col border-[#3f3f3f] border p-5 m-3 gap-1 max-h-[400px] md:max-h-[700px] overflow-auto">
       <table>
         {props.triplets.map((triplet) => (
           <tr key={triplet.id}>

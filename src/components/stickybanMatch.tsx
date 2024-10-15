@@ -101,7 +101,7 @@ const Whitelist = (props: { ckey: string }) => {
     <>
       <LinkColor
         onClick={() => setOpen(true)}
-        className="p-2 border border-white border-dashed"
+        className="p-2 border border-[#3f3f3f] border-dashed"
       >
         Whitelist?
       </LinkColor>
@@ -148,7 +148,7 @@ const Tooltip = (props: TooltipProps) => {
         <div
           ref={refs.setFloating}
           style={floatingStyles}
-          className="foreground border-white border"
+          className="foreground border-[#3f3f3f] border"
         >
           {props.tooltip}
         </div>
