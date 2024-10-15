@@ -97,7 +97,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
           className="flex flex-row justify-center gap-3"
           onSubmit={(event) => {
             event.preventDefault();
-            updateUser({});
+            updateUser({ userCkey: user });
           }}
         >
           <label htmlFor="ckey">User: </label>
