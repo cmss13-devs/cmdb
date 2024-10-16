@@ -1,12 +1,14 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { GlobalContext, User } from "./types/global";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 import { LinkColor } from "./components/link";
 
 export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>();
   const [user, setUser] = useState<User | undefined>();
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const displayToast = (string: string) => {
     showToastMessage(string);
@@ -33,11 +35,11 @@ export default function App(): React.ReactElement {
   }, [setUser, user]);
 
   useEffect(() => {
-    const amount = location.href.search(/\?forceRefresh=true/);
-    if (amount > 0) {
+    if (searchParams.get("forceRefresh")) {
       displayToast("Session reloaded as you were timed out.");
+      setSearchParams({});
     }
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   return (
     <GlobalContext.Provider
