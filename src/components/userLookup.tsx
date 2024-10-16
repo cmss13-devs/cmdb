@@ -19,6 +19,8 @@ import { StickybanMatch } from "./stickybanMatch";
 import { callApi } from "../helpers/api";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { NameExpand } from "./nameExpand";
+import { Ticket } from "../types/ticket";
+import { TicketModal } from "./ticketmodal";
 
 type ActiveLookupType = {
   updateUser: (_args: UpdateUserArguments) => void;
@@ -298,6 +300,12 @@ const UserDetailsModal = (props: { player: Player }) => {
 
   const global = useContext(GlobalContext);
 
+  const [tickets, setViewTickets] = useState(false);
+
+  useEffect(() => {
+    setViewTickets(false);
+  }, [player, setViewTickets]);
+
   return (
     <>
       <div className="flex flex-col items-center md:items-start md:flex-row gap-3 justify-center">
@@ -361,17 +369,99 @@ const UserDetailsModal = (props: { player: Player }) => {
           />
         </div>
       </div>
-      {player.whitelistStatus && (
-        <div className="flex flex-col">
-          <div className="flex flex-row justify-center gap-2">
-            <Expand
-              value={player.whitelistStatus.split("|").join("\n")}
-              label="View Role Whitelists"
-            />
-          </div>
+      <div className="flex flex-col">
+        <div className="flex flex-row justify-center gap-2">
+          {player.whitelistStatus && (
+            <>
+              <Expand
+                value={player.whitelistStatus.split("|").join("\n")}
+                label="View Role Whitelists"
+              />
+              {"|"}
+            </>
+          )}
+          <LinkColor onClick={() => setViewTickets(true)}>
+            View Tickets
+          </LinkColor>
+          {tickets && (
+            <Dialog open={tickets} toggle={() => setViewTickets(false)}>
+              <div className="pt-5">
+                <UserTickets ckey={player.ckey} />
+              </div>
+            </Dialog>
+          )}
         </div>
-      )}
+      </div>
     </>
+  );
+};
+
+const UserTickets = (props: { ckey: string }) => {
+  const [tickets, setTicketData] = useState<Ticket[] | undefined>();
+  const [page, setPage] = useState(1);
+  const [activePage, setActivePage] = useState(1);
+  const [errored, setErrored] = useState(false);
+
+  const glob = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (page != activePage) {
+      setTicketData(undefined);
+    }
+    if (!tickets && !errored) {
+      callApi(`/Ticket/User/${props.ckey}/?page=${page}`).then((value) => {
+        if (value.status != 200) {
+          glob?.updateAndShowToast("No more tickets.");
+          if (page == 1) {
+            setErrored(true);
+          } else {
+            setPage(1);
+          }
+          return;
+        }
+
+        value.json().then((json) => {
+          setTicketData(json);
+          setActivePage(page);
+        });
+      });
+    }
+  }, [
+    tickets,
+    setTicketData,
+    page,
+    setPage,
+    props,
+    activePage,
+    setActivePage,
+    glob,
+    errored,
+  ]);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-row justify-center gap-3">
+        {page > 1 && (
+          <LinkColor
+            className="text-xl"
+            onClick={() => setPage((x) => Math.min(x - 1, 1))}
+          >
+            {"<-"}
+          </LinkColor>
+        )}
+        <div>Page {page}</div>
+        <LinkColor className="text-xl" onClick={() => setPage((x) => x + 1)}>
+          {"->"}
+        </LinkColor>
+      </div>
+      {tickets && <TicketModal tickets={tickets} />}
+      {!tickets && !errored && (
+        <div className="flex flex-row justify-center">Waiting...</div>
+      )}
+      {errored && (
+        <div className="flex flex-row justify-center">No tickets for user.</div>
+      )}
+    </div>
   );
 };
 
