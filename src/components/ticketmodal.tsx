@@ -67,6 +67,11 @@ export const TicketModal: React.FC<TicketModalType> = (
               </>
             )}
             {" -"} {ticket.message}
+            {!round && (
+              <span className="float-end">
+                {new Date(Date.parse(ticket.time)).toLocaleString()}
+              </span>
+            )}
           </div>
         ))}
       </div>
