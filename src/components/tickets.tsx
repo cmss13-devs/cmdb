@@ -169,6 +169,7 @@ const RoundTickets = (props: { round?: number; tickets: Ticket[] }) => {
           toggle={() => {
             nav("..", { relative: "path" });
           }}
+          className="max-h-[80%]"
         >
           <TicketDetail tickets={tickets} ticket={ticket} />
         </Dialog>
