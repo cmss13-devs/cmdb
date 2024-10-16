@@ -31,12 +31,16 @@ export const TicketModal: React.FC<TicketModalType> = (
   const nav = useNavigate();
 
   const distinctNums: number[] = [];
-  const distinctTickets: Ticket[] = [];
+  let distinctTickets: Ticket[] = [];
   tickets.forEach((ticket) => {
     if (distinctNums.includes(ticket.ticketId)) return;
     distinctNums.push(ticket.ticketId);
     distinctTickets.push(ticket);
   });
+
+  if (!round) {
+    distinctTickets = distinctTickets.reverse();
+  }
 
   return (
     <div className="border p-2 rounded border-[#3f3f3f] shadow-lg">
@@ -46,7 +50,7 @@ export const TicketModal: React.FC<TicketModalType> = (
         </div>
       )}
       <div className="flex flex-col pt-3 gap-2">
-        {distinctTickets.reverse().map((ticket) => (
+        {distinctTickets.map((ticket) => (
           <div key={ticket.id} className="border-t pt-1 border-[#3f3f3f]">
             <LinkColor
               onClick={() => {

@@ -444,7 +444,7 @@ const UserTickets = (props: { ckey: string }) => {
         {page > 1 && (
           <LinkColor
             className="text-xl"
-            onClick={() => setPage((x) => Math.min(x - 1, 1))}
+            onClick={() => setPage((x) => Math.max(x - 1, 1))}
           >
             {"<-"}
           </LinkColor>
