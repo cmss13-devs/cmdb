@@ -57,8 +57,12 @@ export default function App(): React.ReactElement {
         <LinkColor>
           <Link to="/ticket">Tickets</Link>
         </LinkColor>
+        |
+        <LinkColor>
+          <Link to="/user">Users</Link>
+        </LinkColor>
       </div>
-      <div className="w-full md:container md:mx-auto flex flex-col foreground min-h-screen max-h-screen rounded mt-5 p-5">
+      <div className="w-full md:container md:mx-auto flex flex-col foreground max-h-screen rounded mt-5 p-5">
         <Outlet />
       </div>
       <div className={`toast ${toastMessage ? "show" : ""}`}>
