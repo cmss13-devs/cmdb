@@ -111,15 +111,17 @@ const TicketDetail = (props: {
   const { tickets, ticket, round } = props;
 
   const relevantTickets = tickets.filter(
-    (tick) => tick.ticketId == ticket && round && tick.roundId == round
+    (tick) => tick.ticketId == ticket && (round ? tick.roundId == round : true)
   );
 
   return (
     <div className="flex flex-col pt-7 gap-2">
       <div className="flex flex-row justify-center">
-        <LinkColor>
-          <Link to={`/Ticket/${round}`}>Round {round}</Link>
-        </LinkColor>
+        {round && (
+          <LinkColor>
+            <Link to={`/Ticket/${round}`}>Round {round}</Link>
+          </LinkColor>
+        )}
       </div>
       {relevantTickets.map((ticket) => (
         <div key={ticket.id}>
