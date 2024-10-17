@@ -28,7 +28,7 @@ export default function HomePage(): React.ReactElement {
         <Link
           to={"/sticky"}
           className={
-            "border border-[#3f3f3f] rounded p-3 cursor-pointer grow clicky"
+            "border border-[#3f3f3f] rounded p-3 cursor-pointer grow clicky shadow-lg"
           }
         >
           Sticky Menu
@@ -65,7 +65,7 @@ const LookupOption = (props: LookupProps) => {
   return (
     <>
       <div
-        className="border border-[#3f3f3f] p-3 cursor-pointer grow clicky"
+        className="border border-[#3f3f3f] p-3 cursor-pointer grow clicky rounded"
         onClick={() => {
           setSelected(true);
           clearTimeout(timer);
