@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Ticket, TicketLoader } from "../types/ticket";
 import { LinkColor } from "./link";
 import { NameExpand } from "./nameExpand";
@@ -15,18 +15,20 @@ export const TicketModal: React.FC<TicketModalType> = (
 ) => {
   const { tickets, round } = props;
 
-  const [ticket, setTicket] = useState<number | undefined>();
+  const [ticket, setTicket] = useState<
+    { ticketNum: number; round?: number } | undefined
+  >();
 
   const { ticketNum } = useLoaderData() as TicketLoader;
 
   useEffect(() => {
     if (ticketNum && !ticket) {
-      setTicket(parseInt(ticketNum));
+      setTicket({ ticketNum: parseInt(ticketNum) });
     }
-    if (!ticketNum && ticket) {
+    if (!ticketNum && ticket && round) {
       setTicket(undefined);
     }
-  }, [ticket, ticketNum, setTicket]);
+  }, [ticket, ticketNum, setTicket, round]);
 
   const nav = useNavigate();
 
@@ -54,7 +56,13 @@ export const TicketModal: React.FC<TicketModalType> = (
           <div key={ticket.id} className="border-t pt-1 border-[#3f3f3f]">
             <LinkColor
               onClick={() => {
-                nav(`/ticket/${ticket.roundId}/${ticket.ticketId}`);
+                if (round) nav(`/ticket/${ticket.roundId}/${ticket.ticketId}`);
+                else {
+                  setTicket({
+                    ticketNum: ticket.ticketId,
+                    round: ticket.roundId,
+                  });
+                }
               }}
             >
               {!round && `#${ticket.roundId} `}Ticket #{ticket.ticketId}
@@ -79,24 +87,40 @@ export const TicketModal: React.FC<TicketModalType> = (
         <Dialog
           open={!!ticket}
           toggle={() => {
-            nav("..", { relative: "path" });
+            if (round) nav("..", { relative: "path" });
+            else setTicket(undefined);
           }}
           className="max-h-[80%]"
         >
-          <TicketDetail tickets={tickets} ticket={ticket} />
+          <TicketDetail
+            tickets={tickets}
+            ticket={ticket.ticketNum}
+            round={ticket.round}
+          />
         </Dialog>
       )}
     </div>
   );
 };
 
-const TicketDetail = (props: { tickets: Ticket[]; ticket: number }) => {
-  const { tickets, ticket } = props;
+const TicketDetail = (props: {
+  tickets: Ticket[];
+  ticket: number;
+  round?: number;
+}) => {
+  const { tickets, ticket, round } = props;
 
-  const relevantTickets = tickets.filter((tick) => tick.ticketId == ticket);
+  const relevantTickets = tickets.filter(
+    (tick) => tick.ticketId == ticket && round && tick.roundId == round
+  );
 
   return (
     <div className="flex flex-col pt-7 gap-2">
+      <div className="flex flex-row justify-center">
+        <LinkColor>
+          <Link to={`/Ticket/${round}`}>Round {round}</Link>
+        </LinkColor>
+      </div>
       {relevantTickets.map((ticket) => (
         <div key={ticket.id}>
           <div className="flex flex-row justify-between border-b pt-1 border-[#555555]">
