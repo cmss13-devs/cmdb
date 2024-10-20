@@ -52,6 +52,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const updateUser = useCallback(
     (args: UpdateUserArguments) => {
       const { userCkey, userDiscordId } = args;
+      setLoading(true);
       const re = /[\\^]|[^a-z0-9@]/g;
       const userCkeyChecked = userCkey?.toLowerCase().replace(re, "");
       callApi(
@@ -59,7 +60,6 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
           ? `/User?ckey=${userCkeyChecked}`
           : `/User?discordId=${userDiscordId}`
       ).then((value) => {
-        setLoading(false);
         if (value.status == 404) {
           global?.updateAndShowToast("Failed to find user.");
           if (close) {
@@ -79,6 +79,9 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   const potentialUser = useLoaderData();
 
   useEffect(() => {
+    console.log(loading);
+    if (loading) return;
+
     if (discordId && !userData) {
       updateUser({ userDiscordId: discordId });
       return;
@@ -90,7 +93,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
     if (potentialUser && (!userData || userData.ckey != potentialUser)) {
       updateUser({ userCkey: potentialUser as string });
     }
-  }, [value, userData, discordId, updateUser, potentialUser, user]);
+  }, [value, userData, discordId, updateUser, potentialUser, user, loading]);
 
   const nav = useNavigate();
 
