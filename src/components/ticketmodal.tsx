@@ -35,8 +35,8 @@ export const TicketModal: React.FC<TicketModalType> = (
   const distinctNums: number[] = [];
   let distinctTickets: Ticket[] = [];
   tickets.forEach((ticket) => {
-    if (distinctNums.includes(ticket.ticketId)) return;
-    distinctNums.push(ticket.ticketId);
+    if (distinctNums.includes(ticket.ticket)) return;
+    distinctNums.push(ticket.ticket);
     distinctTickets.push(ticket);
   });
 
@@ -56,16 +56,16 @@ export const TicketModal: React.FC<TicketModalType> = (
           <div key={ticket.id} className="border-t pt-1 border-[#3f3f3f]">
             <LinkColor
               onClick={() => {
-                if (round) nav(`/ticket/${ticket.roundId}/${ticket.ticketId}`);
+                if (round) nav(`/ticket/${ticket.roundId}/${ticket.ticket}`);
                 else {
                   setTicket({
-                    ticketNum: ticket.ticketId,
+                    ticketNum: ticket.ticket,
                     round: ticket.roundId,
                   });
                 }
               }}
             >
-              {!round && `#${ticket.roundId} `}Ticket #{ticket.ticketId}
+              {!round && `#${ticket.roundId} `}Ticket #{ticket.ticket}
             </LinkColor>
             : <NameExpand name={ticket.sender} />
             {ticket.recipient && (
@@ -111,7 +111,7 @@ const TicketDetail = (props: {
   const { tickets, ticket, round } = props;
 
   const relevantTickets = tickets.filter(
-    (tick) => tick.ticketId == ticket && (round ? tick.roundId == round : true)
+    (tick) => tick.ticket == ticket && (round ? tick.roundId == round : true)
   );
 
   return (

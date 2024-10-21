@@ -1,6 +1,6 @@
 export type Ticket = {
   id: number;
-  ticketId: number;
+  ticket: number;
   action: string;
   message: string;
   recipient: string;
