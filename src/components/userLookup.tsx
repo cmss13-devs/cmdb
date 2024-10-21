@@ -804,9 +804,10 @@ const UserJobBansModal = (props: { player: Player }) => {
         {jobBans?.map((jobBan) => (
           <JobBan jobBan={jobBan} key={jobBan.id} />
         ))}
-        {!jobBans?.length && (
-          <div className="flex flex-row justify-center">No job bans.</div>
-        )}
+        {!jobBans ||
+          (!jobBans.length && (
+            <div className="flex flex-row justify-center">No job bans.</div>
+          ))}
       </div>
     </div>
   );
