@@ -89,10 +89,13 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
       updateUser({ userCkey: value });
       return;
     }
-    if (
-      potentialUser &&
-      (!userData || userData.ckey != potentialUser.toLowerCase())
-    ) {
+
+    if (!potentialUser) return;
+
+    const re = /[\\^]|[^a-z0-9@]/g;
+    const checked = potentialUser.toLowerCase().replace(re, "");
+
+    if (potentialUser && (!userData || userData.ckey != checked)) {
       updateUser({ userCkey: potentialUser as string });
     }
   }, [value, userData, discordId, updateUser, potentialUser, user, loading]);
