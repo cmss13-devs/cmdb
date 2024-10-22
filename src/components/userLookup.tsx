@@ -58,7 +58,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
       callApi(
         userCkeyChecked
           ? `/User?ckey=${userCkeyChecked}`
-          : `/User?discordId=${userDiscordId}`
+          : `/User?discord_id=${userDiscordId}`
       ).then((value) => {
         if (value.status == 404) {
           global?.updateAndShowToast("Failed to find user.");
