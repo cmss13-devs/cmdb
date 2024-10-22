@@ -768,7 +768,7 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
         )}
         {"by"}
         <NameExpand name={notingAdminCkey} /> ({adminRank})
-        {isConfidential && "[CONFIDENTIALLY]"} on {date}
+        {!!isConfidential && "[CONFIDENTIALLY]"} on {date}
       </div>
     </div>
   );
