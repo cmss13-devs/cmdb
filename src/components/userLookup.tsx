@@ -76,10 +76,9 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
     [setLoading, setUserData, close, global]
   );
 
-  const potentialUser = useLoaderData();
+  const potentialUser = useLoaderData() as string;
 
   useEffect(() => {
-    console.log(loading);
     if (loading) return;
 
     if (discordId && !userData) {
@@ -90,7 +89,10 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
       updateUser({ userCkey: value });
       return;
     }
-    if (potentialUser && (!userData || userData.ckey != potentialUser)) {
+    if (
+      potentialUser &&
+      (!userData || userData.ckey != potentialUser.toLowerCase())
+    ) {
       updateUser({ userCkey: potentialUser as string });
     }
   }, [value, userData, discordId, updateUser, potentialUser, user, loading]);

@@ -112,7 +112,12 @@ const ExpandDetails = (props: { stickyban: Stickyban }) => {
           <div className="flex flex-col gap-2 pt-10">
             <div>CIDs: {cids && cids.map((cid) => cid.cid).join(", ")}</div>
             <div>
-              CKEYs: {ckeys && ckeys.map((ckey) => ckey.ckey).join(", ")}
+              CKEYs:{" "}
+              {ckeys &&
+                ckeys
+                  .filter((ckey) => ckey.ckey)
+                  .map((ckey) => ckey.ckey)
+                  .join(", ")}
             </div>
             <div>IPs: {ips && ips.map((ip) => ip.ip).join(", ")}</div>
           </div>
