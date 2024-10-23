@@ -656,9 +656,9 @@ const AddNote = (props: { player: Player }) => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        Message: message,
-        Category: "1",
-        Confidential: confidential ? "true" : "false",
+        message: message,
+        category: "1",
+        confidential: confidential ? "true" : "false",
       }),
     }).then((response) => {
       response.text().then((response) => {
