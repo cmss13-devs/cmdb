@@ -661,15 +661,13 @@ const AddNote = (props: { player: Player }) => {
         confidential: confidential ? "true" : "false",
       }),
     }).then((response) => {
-      response.text().then((response) => {
-        refetch?.updateUser({ userCkey: ckey });
-        setAdding(false);
-        if (response) {
-          global?.updateAndShowToast(`Added note to ${ckey}.`);
-        } else {
-          global?.updateAndShowToast(`Failed to add note.`);
-        }
-      });
+      refetch?.updateUser({ userCkey: ckey });
+      setAdding(false);
+      if (response.status == 202) {
+        global?.updateAndShowToast(`Added note to ${ckey}.`);
+      } else {
+        global?.updateAndShowToast(`Failed to add note.`);
+      }
     });
   };
 
