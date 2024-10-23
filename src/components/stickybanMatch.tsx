@@ -20,11 +20,7 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
 
   const { ip, ckey, cid } = props;
 
-  const getPath = () => {
-    if (ip) return `/Stickyban/Ip?ip=${ip}`;
-    if (ckey) return `/Stickyban/Ckey?ckey=${ckey}`;
-    return `/Stickyban/Cid?cid=${cid}`;
-  };
+  const [lookedUp, setLookedUp] = useState<string>("");
 
   const getText = () => {
     if (ip) return "IP";
@@ -33,12 +29,27 @@ export const StickybanMatch: React.FC<StickybanMatch> = (
   };
 
   useEffect(() => {
-    if (!stickyData) {
+    const getPath = () => {
+      if (ip) return `/Stickyban/Ip?ip=${ip}`;
+      if (ckey) return `/Stickyban/Ckey?ckey=${ckey}`;
+      return `/Stickyban/Cid?cid=${cid}`;
+    };
+
+    const to_use = ip || ckey || cid;
+
+    if (stickyData && to_use != lookedUp) {
+      setStickyData(null);
+    }
+
+    if (!stickyData && to_use != lookedUp) {
       callApi(getPath()).then((value) =>
-        value.json().then((json) => setStickyData(json))
+        value.json().then((json) => {
+          setStickyData(json);
+          setLookedUp(to_use!);
+        })
       );
     }
-  });
+  }, [stickyData, cid, ckey, ip, lookedUp]);
 
   if (!stickyData?.length) return;
 
