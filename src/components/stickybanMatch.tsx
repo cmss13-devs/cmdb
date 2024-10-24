@@ -95,16 +95,12 @@ const Whitelist = (props: { ckey: string }) => {
     callApi(`/Stickyban/Whitelist?ckey=${ckey}`, {
       method: "POST",
     }).then((value) => {
-      value.text().then((value) => {
-        setOpen(false);
-        if (value) {
-          global?.updateAndShowToast(
-            `Whitelisted ${ckey} against ${value} stickybans.`
-          );
-        } else {
-          global?.updateAndShowToast(`No stickybans lifted for ${ckey}.`);
-        }
-      });
+      setOpen(false);
+      if (value.status == 202) {
+        global?.updateAndShowToast(`Whitelisted ${ckey}.`);
+      } else {
+        global?.updateAndShowToast(`No stickybans lifted for ${ckey}.`);
+      }
     });
   };
 
