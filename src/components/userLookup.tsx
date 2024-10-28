@@ -309,6 +309,7 @@ const UserDetailsModal = (props: { player: Player }) => {
   const global = useContext(GlobalContext);
 
   const [tickets, setViewTickets] = useState(false);
+  const [playtime, setViewPlaytime] = useState(false);
 
   useEffect(() => {
     setViewTickets(false);
@@ -398,6 +399,21 @@ const UserDetailsModal = (props: { player: Player }) => {
               </div>
             </Dialog>
           )}
+          {"|"}
+          <LinkColor onClick={() => setViewPlaytime(true)}>
+            View Playtime
+          </LinkColor>
+          {playtime && (
+            <Dialog
+              open={playtime}
+              toggle={() => setViewPlaytime(false)}
+              className="h-[80%]"
+            >
+              <div className="pt-5">
+                <UserPlaytime id={player.id} />
+              </div>
+            </Dialog>
+          )}
         </div>
       </div>
     </>
@@ -469,6 +485,37 @@ const UserTickets = (props: { ckey: string }) => {
       {errored && (
         <div className="flex flex-row justify-center">No tickets for user.</div>
       )}
+    </div>
+  );
+};
+
+type Playtime = {
+  id: number;
+  playerId: number;
+  roleId: string;
+  totalMinutes: number;
+};
+
+const UserPlaytime = (props: { id: number }) => {
+  const [playtimeData, setPlaytimeData] = useState<Playtime[] | undefined>();
+
+  useEffect(() => {
+    callApi(`/User/${props.id}/Playtime`).then((value) =>
+      value.json().then((json) => setPlaytimeData(json))
+    );
+  }, [props.id]);
+
+  if (!playtimeData) return "Loading...";
+
+  return (
+    <div className="flex flex-col gap-2 mt-2">
+      {playtimeData
+        .sort((a, b) => b.totalMinutes - a.totalMinutes)
+        .map((playtime) => (
+          <div key={playtime.id}>
+            {playtime.roleId}: {playtime.totalMinutes} minutes
+          </div>
+        ))}
     </div>
   );
 };
