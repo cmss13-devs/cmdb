@@ -7,6 +7,7 @@ import { Stickybans } from "./components/stickybans";
 import { Tickets } from "./components/tickets";
 import HomePage from "./components/homePage";
 import { createHashRouter, RouterProvider } from "react-router-dom";
+import { WhitelistMenu } from "./components/whitelistPanel";
 
 const router = createHashRouter([
   {
@@ -37,6 +38,10 @@ const router = createHashRouter([
         loader: ({ params }) => {
           return params.ckey || "";
         },
+      },
+      {
+        path: "/whitelists",
+        element: <WhitelistMenu />,
       },
     ],
   },

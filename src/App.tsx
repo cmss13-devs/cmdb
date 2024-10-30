@@ -63,6 +63,10 @@ export default function App(): React.ReactElement {
         <LinkColor>
           <Link to="/user">Users</Link>
         </LinkColor>
+        |
+        <LinkColor>
+          <Link to="/whitelists">Whitelists</Link>
+        </LinkColor>
       </div>
       <div className="w-full md:container md:mx-auto flex flex-col foreground rounded mt-5 p-5">
         <Outlet />

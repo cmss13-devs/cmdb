@@ -39,6 +39,12 @@ export default function HomePage(): React.ReactElement {
         >
           Ticket Menu
         </Link>
+        <Link
+          to={"/whitelists"}
+          className="border border-[#555555] rounded p-3 cursor-pointer grow clicky"
+        >
+          Whitelist Menu
+        </Link>
 
         <RoundData />
       </div>
