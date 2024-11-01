@@ -513,7 +513,7 @@ const UserPlaytime = (props: { id: number }) => {
         .sort((a, b) => b.totalMinutes - a.totalMinutes)
         .map((playtime) => (
           <div key={playtime.id}>
-            {playtime.roleId}: {playtime.totalMinutes} minutes
+            {playtime.roleId}: {playtime.totalMinutes / 60} hours
           </div>
         ))}
     </div>
