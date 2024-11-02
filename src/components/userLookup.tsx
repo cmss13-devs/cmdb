@@ -507,8 +507,18 @@ const UserPlaytime = (props: { id: number }) => {
 
   if (!playtimeData) return "Loading...";
 
+  const totalMinutes: number = playtimeData.reduce(
+    (currentValue, playtime) => playtime.totalMinutes + currentValue,
+    0
+  );
+
   return (
     <div className="flex flex-col gap-2 mt-2">
+      {totalMinutes > 0 && (
+        <div className="underline">
+          Total: {Math.round((totalMinutes / 60) * 100) / 100} hours
+        </div>
+      )}
       {playtimeData
         .sort((a, b) => b.totalMinutes - a.totalMinutes)
         .map((playtime) => (
