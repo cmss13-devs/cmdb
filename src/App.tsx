@@ -35,6 +35,15 @@ export default function App(): React.ReactElement {
   }, [setUser, user]);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const existing = params.get("existing");
+
+    if (!existing) return;
+
+    location.replace(`${location.origin}/#${existing}?forceRefresh=true`);
+  }, []);
+
+  useEffect(() => {
     if (searchParams.get("forceRefresh")) {
       displayToast("Session reloaded as you were timed out.");
       setSearchParams({});
