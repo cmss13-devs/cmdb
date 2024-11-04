@@ -439,7 +439,7 @@ const UserTickets = (props: { ckey: string }) => {
           if (page == 1) {
             setErrored(true);
           } else {
-            setPage(1);
+            setPage(page - 1);
           }
           return;
         }

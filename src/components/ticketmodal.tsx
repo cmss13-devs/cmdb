@@ -32,11 +32,11 @@ export const TicketModal: React.FC<TicketModalType> = (
 
   const nav = useNavigate();
 
-  const distinctNums: number[] = [];
+  const distinctNums: string[] = [];
   let distinctTickets: Ticket[] = [];
   tickets.forEach((ticket) => {
-    if (distinctNums.includes(ticket.ticket)) return;
-    distinctNums.push(ticket.ticket);
+    if (distinctNums.includes(`${ticket.roundId}-${ticket.ticket}`)) return;
+    distinctNums.push(`${ticket.roundId}-${ticket.ticket}`);
     distinctTickets.push(ticket);
   });
 
