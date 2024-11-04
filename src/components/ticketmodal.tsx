@@ -119,7 +119,7 @@ const TicketDetail = (props: {
       <div className="flex flex-row justify-center">
         {round && (
           <LinkColor>
-            <Link to={`/Ticket/${round}`}>Round {round}</Link>
+            <Link to={`/ticket/${round}`}>Round {round}</Link>
           </LinkColor>
         )}
       </div>
