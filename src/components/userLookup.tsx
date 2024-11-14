@@ -505,6 +505,13 @@ const UserPlaytime = (props: { id: number }) => {
     );
   }, [props.id]);
 
+  const getRecentPlaytime = (when: number) => {
+    setPlaytimeData(undefined);
+    callApi(`/User/${props.id}/Playtime/${when}`).then((value) =>
+      value.json().then((json) => setPlaytimeData(json))
+    );
+  };
+
   if (!playtimeData) return "Loading...";
 
   const totalMinutes: number = playtimeData.reduce(
@@ -513,20 +520,33 @@ const UserPlaytime = (props: { id: number }) => {
   );
 
   return (
-    <div className="flex flex-col gap-2 mt-2">
-      {totalMinutes > 0 && (
+    <div className="flex flex-col">
+      <div className="flex flex-row gap-2">
+        <LinkColor onClick={() => getRecentPlaytime(30)}>
+          Last 30 days
+        </LinkColor>{" "}
+        |{" "}
+        <LinkColor onClick={() => getRecentPlaytime(60)}>
+          Last 60 Days
+        </LinkColor>{" "}
+        |{" "}
+        <LinkColor onClick={() => getRecentPlaytime(90)}>
+          Last 90 Days
+        </LinkColor>
+      </div>
+      <div className="flex flex-col gap-2 mt-2">
         <div className="underline">
           Total: {Math.round((totalMinutes / 60) * 100) / 100} hours
         </div>
-      )}
-      {playtimeData
-        .sort((a, b) => b.totalMinutes - a.totalMinutes)
-        .map((playtime) => (
-          <div key={playtime.id}>
-            {playtime.roleId}:{" "}
-            {Math.round((playtime.totalMinutes / 60) * 100) / 100} hours
-          </div>
-        ))}
+        {playtimeData
+          .sort((a, b) => b.totalMinutes - a.totalMinutes)
+          .map((playtime) => (
+            <div key={playtime.id}>
+              {playtime.roleId}:{" "}
+              {Math.round((playtime.totalMinutes / 60) * 100) / 100} hours
+            </div>
+          ))}
+      </div>
     </div>
   );
 };
