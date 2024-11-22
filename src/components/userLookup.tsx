@@ -21,6 +21,7 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { NameExpand } from "./nameExpand";
 import { Ticket } from "../types/ticket";
 import { TicketModal } from "./ticketmodal";
+import { useDebounce } from "use-debounce";
 
 type ActiveLookupType = {
   updateUser: (_args: UpdateUserArguments) => void;
@@ -426,44 +427,94 @@ const UserTickets = (props: { ckey: string }) => {
   const [activePage, setActivePage] = useState(1);
   const [errored, setErrored] = useState(false);
 
-  const glob = useContext(GlobalContext);
+  const [fromDate, setFromDate] = useState<Date>();
+  const [toDate, setToDate] = useState<Date>();
+
+  const [debouncedFrom] = useDebounce(fromDate, 500);
+  const [debouncedTo] = useDebounce(toDate, 500);
+
+  const glob = useContext(GlobalContext)!;
+
+  const { updateAndShowToast } = glob;
+
+  const { ckey } = props;
+
+  const encodeDate = (date: Date) => {
+    return date.toISOString().slice(0, 19).replace("T", " ");
+  };
 
   useEffect(() => {
     if (page != activePage) {
       setTicketData(undefined);
     }
-    if (!tickets && !errored) {
-      callApi(`/Ticket/User/${props.ckey}/?page=${page}`).then((value) => {
-        if (value.status != 200) {
-          glob?.updateAndShowToast("No more tickets.");
-          if (page == 1) {
-            setErrored(true);
-          } else {
-            setPage(page - 1);
-          }
-          return;
-        }
 
-        value.json().then((json) => {
-          setTicketData(json);
-          setActivePage(page);
-        });
-      });
+    if ((debouncedFrom && !debouncedTo) || (!debouncedFrom && debouncedTo))
+      return;
+
+    if (!errored) {
+      let dateString = "";
+      if (debouncedFrom && debouncedTo) {
+        const to = new Date(debouncedTo);
+        to.setUTCHours(23, 59, 59);
+        dateString = `&from=${encodeDate(debouncedFrom)}&to=${encodeDate(to)}`;
+      }
+      callApi(`/Ticket/User/${ckey}/?page=${page}${dateString}`).then(
+        (value) => {
+          if (value.status != 200) {
+            updateAndShowToast("No more tickets.");
+            if (page == 1) {
+              setErrored(true);
+            } else {
+              setPage(page - 1);
+            }
+            return;
+          }
+
+          value.json().then((json) => {
+            setTicketData(json);
+            setActivePage(page);
+          });
+        }
+      );
     }
   }, [
-    tickets,
     setTicketData,
     page,
     setPage,
-    props,
+    ckey,
     activePage,
     setActivePage,
-    glob,
+    updateAndShowToast,
     errored,
+
+    debouncedFrom,
+    debouncedTo,
   ]);
 
   return (
     <div className="flex flex-col gap-2">
+      <div className="flex flex-row justify-center gap-3">
+        <div className="flex flex-row gap-1">
+          From:
+          <input
+            type="date"
+            onChange={(val) => {
+              const date = val.target.valueAsDate;
+              if (date) setFromDate(date);
+            }}
+          />
+        </div>
+        <div className="flex flex-row gap-1">
+          To:
+          <input
+            type="date"
+            onChange={(val) => {
+              const date = val.target.valueAsDate;
+              if (date) setToDate(date);
+            }}
+          />
+        </div>
+      </div>
       <div className="flex flex-row justify-center gap-3">
         {page > 1 && (
           <LinkColor
