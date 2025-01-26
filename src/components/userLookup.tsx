@@ -584,6 +584,10 @@ const UserPlaytime = (props: { id: number }) => {
         <LinkColor onClick={() => getRecentPlaytime(90)}>
           Last 90 Days
         </LinkColor>
+        |{" "}
+        <LinkColor onClick={() => getRecentPlaytime(180)}>
+          Last 6 Months
+        </LinkColor>
       </div>
       <div className="flex flex-col gap-2 mt-2">
         <div className="underline">
