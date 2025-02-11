@@ -17,7 +17,7 @@ import { LinkColor } from "./link";
 import { Expand } from "./expand";
 import { StickybanMatch } from "./stickybanMatch";
 import { callApi } from "../helpers/api";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
 import { NameExpand } from "./nameExpand";
 import { Ticket } from "../types/ticket";
 import { TicketModal } from "./ticketmodal";
@@ -316,6 +316,17 @@ const UserDetailsModal = (props: { player: Player }) => {
     setViewTickets(false);
   }, [player, setViewTickets]);
 
+  const potentialUser = useLoaderData() as string;
+  const nav = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("viewTickets")) {
+      setViewTickets(true);
+    }
+  }, [searchParams]);
+
   return (
     <>
       <div className="flex flex-col items-center md:items-start md:flex-row gap-3 justify-center">
@@ -390,7 +401,15 @@ const UserDetailsModal = (props: { player: Player }) => {
               {"|"}
             </>
           )}
-          <LinkColor onClick={() => setViewTickets(true)}>
+          <LinkColor
+            onClick={() => {
+              if (!potentialUser) {
+                nav(`/User/${ckey}&viewTickets=1`);
+              } else {
+                setViewTickets(true);
+              }
+            }}
+          >
             View Tickets
           </LinkColor>
           {tickets && (
