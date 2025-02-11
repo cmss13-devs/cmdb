@@ -404,7 +404,7 @@ const UserDetailsModal = (props: { player: Player }) => {
           <LinkColor
             onClick={() => {
               if (!potentialUser) {
-                nav(`/User/${ckey}&viewTickets=1`);
+                nav(`/user/${ckey}/?viewTickets=1`);
               } else {
                 setViewTickets(true);
               }
