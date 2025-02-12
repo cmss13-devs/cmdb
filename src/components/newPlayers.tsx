@@ -69,8 +69,7 @@ const RenderNewPlayer = (props: { player: Player }) => {
 
   const byondAccountAge = new Date(Date.parse(player.byondAccountAge!));
 
-  const isNew =
-    firstJoin.getMilliseconds() - byondAccountAge.getMilliseconds() < 86400000;
+  const isNew = firstJoin.getTime() - byondAccountAge.getTime() < 86400000;
 
   return (
     <tr className={isNew ? "border border-red-400 rounded" : ""}>
