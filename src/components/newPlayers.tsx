@@ -33,7 +33,6 @@ export const NewPlayers: React.FC = () => {
         <input
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              console.log("doing it");
               setTimeAgo(Number.parseInt(ev.currentTarget.value));
             }
           }}
@@ -65,7 +64,7 @@ export const NewPlayers: React.FC = () => {
               <td>
                 {new Date(
                   Date.parse(player.byondAccountAge!.replace(" ", "T"))
-                ).toLocaleString()}
+                ).toLocaleDateString()}
               </td>
               <td>
                 <DetailedCid cid={player.lastKnownCid} />
