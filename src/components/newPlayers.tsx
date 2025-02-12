@@ -46,6 +46,7 @@ export const NewPlayers: React.FC = () => {
           <tr>
             <th>CKEY</th>
             <th>Time Connected</th>
+            <th>BYOND account age</th>
             <th>CID</th>
             <th>IP</th>
           </tr>
@@ -59,6 +60,11 @@ export const NewPlayers: React.FC = () => {
               <td>
                 {new Date(
                   Date.parse(player.firstJoinDate!.replace(" ", "T"))
+                ).toLocaleString()}
+              </td>
+              <td>
+                {new Date(
+                  Date.parse(player.byondAccountAge!.replace(" ", "T"))
                 ).toLocaleString()}
               </td>
               <td>
