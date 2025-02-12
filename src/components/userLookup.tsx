@@ -134,7 +134,7 @@ export const LookupMenu: React.FC<LookupMenuProps> = (
   );
 };
 
-interface Player {
+export interface Player {
   id: number;
   ckey: string;
   lastLogin: string;

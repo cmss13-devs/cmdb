@@ -8,6 +8,7 @@ import { Tickets } from "./components/tickets";
 import HomePage from "./components/homePage";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { WhitelistMenu } from "./components/whitelistPanel";
+import { NewPlayers } from "./components/newPlayers";
 
 const router = createHashRouter([
   {
@@ -42,6 +43,10 @@ const router = createHashRouter([
       {
         path: "/whitelists",
         element: <WhitelistMenu />,
+      },
+      {
+        path: "/new_players",
+        element: <NewPlayers />,
       },
     ],
   },

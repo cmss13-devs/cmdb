@@ -45,6 +45,12 @@ export default function HomePage(): React.ReactElement {
         >
           Whitelist Menu
         </Link>
+        <Link
+          to={"/new_players"}
+          className="border border-[#555555] rounded p-3 cursor-pointer grow clicky"
+        >
+          New Players
+        </Link>
 
         <RoundData />
       </div>
