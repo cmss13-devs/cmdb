@@ -886,6 +886,7 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
     isConfidential,
     adminRank,
     isBan,
+    banTime,
     noteCategory,
     notedPlayerCkey,
     notingAdminCkey,
@@ -910,7 +911,7 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
     <div className="flex flex-col">
       <div className="flex flex-col md:flex-row gap-1">
         {tag}
-        <div className="text-wrap">{text}</div>
+        <div className="text-wrap">{isBan && banTime ? `Banned for ${banTime}: `: ""}{text}</div>
       </div>
       <div className="italic flex flex-row justify-end gap-1">
         {displayNoted && (
