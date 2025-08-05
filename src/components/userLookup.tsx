@@ -890,6 +890,7 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
     noteCategory,
     notedPlayerCkey,
     notingAdminCkey,
+    roundId,
   } = note;
 
   let tag = <ColoredText color="#008800">[ADMIN]</ColoredText>;
@@ -911,7 +912,10 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
     <div className="flex flex-col">
       <div className="flex flex-col md:flex-row gap-1">
         {tag}
-        <div className="text-wrap">{isBan && banTime ? `Banned for ${banTime}: `: ""}{text}</div>
+        <div className="text-wrap">
+          {isBan && banTime ? `Banned for ${banTime}: ` : ""}
+          {text}
+        </div>
       </div>
       <div className="italic flex flex-row justify-end gap-1">
         {displayNoted && (
@@ -923,6 +927,7 @@ const UserNote = (props: { note: PlayerNote; displayNoted?: boolean }) => {
         {"by"}
         <NameExpand name={notingAdminCkey} /> ({adminRank})
         {!!isConfidential && "[CONFIDENTIALLY]"} on {date}
+        {roundId ? ` (#${roundId})` : ""}
       </div>
     </div>
   );
