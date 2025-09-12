@@ -25,13 +25,24 @@ type RoundData = {
 export const RoundData: React.FC = () => {
   const [roundData, setRoundData] = useState<RoundData | null>(null);
 
+  const [errored, setErrored] = useState(false);
+
   useEffect(() => {
     if (!roundData) {
-      callApi(`/Round`).then((value) =>
-        value.json().then((json) => setRoundData(json.data))
-      );
+      callApi(`/Round`)
+        .then((value) =>
+          value
+            .json()
+            .then((json) => setRoundData(json.data))
+            .catch(() => setErrored(true))
+        )
+        .catch(() => setErrored(true));
     }
   }, [roundData, setRoundData]);
+
+  if (errored) {
+    return <div></div>;
+  }
 
   if (!roundData) {
     return <div>Loading...</div>;
