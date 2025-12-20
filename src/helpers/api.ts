@@ -3,7 +3,7 @@
  */
 const attemptRefresh = async (): Promise<boolean> => {
   try {
-    const refreshRes = await fetch("/auth/refresh", {
+    const refreshRes = await fetch("/api/auth/refresh", {
       method: "POST",
       credentials: "include",
     });
@@ -18,7 +18,7 @@ const attemptRefresh = async (): Promise<boolean> => {
  */
 const redirectToLogin = (): never => {
   const currentPath = window.location.pathname + window.location.hash;
-  window.location.href = `/auth/login?redirect=${encodeURIComponent(currentPath)}`;
+  window.location.href = `/api/auth/login?redirect=${encodeURIComponent(currentPath)}`;
   throw new Error("Session expired - redirecting to login");
 };
 

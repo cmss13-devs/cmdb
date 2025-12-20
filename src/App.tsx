@@ -20,7 +20,7 @@ export default function App(): React.ReactElement {
 
   const handleLogout = async () => {
     try {
-      await fetch("/auth/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -46,14 +46,14 @@ export default function App(): React.ReactElement {
       }
 
       // Fetch user info from backend
-      fetch("/auth/userinfo", {
+      fetch("/api/auth/userinfo", {
         credentials: "include",
       })
         .then((response) => {
           if (response.status === 401) {
             // Not authenticated, redirect to login
             const currentPath = window.location.pathname + window.location.hash;
-            window.location.href = `/auth/login?redirect=${encodeURIComponent(currentPath)}`;
+            window.location.href = `/api/auth/login?redirect=${encodeURIComponent(currentPath)}`;
             return null;
           }
           if (!response.ok) {
@@ -69,7 +69,7 @@ export default function App(): React.ReactElement {
         .catch((error) => {
           console.error("Auth error:", error);
           // Redirect to login on error
-          window.location.href = "/auth/login";
+          window.location.href = "/api/auth/login";
         })
         .finally(() => {
           setAuthLoading(false);
