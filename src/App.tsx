@@ -1,38 +1,83 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { GlobalContext, User } from "./types/global";
+import type React from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, Outlet, useSearchParams } from "react-router-dom";
+import { GlobalContext, type User } from "./types/global";
 import { LinkColor } from "./components/link";
 
 export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>();
   const [user, setUser] = useState<User | undefined>();
+  const [authLoading, setAuthLoading] = useState(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const displayToast = (string: string) => {
+  const displayToast = useCallback((string: string) => {
     showToastMessage(string);
     setTimeout(() => {
       showToastMessage("");
     }, 3000);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      setUser(undefined);
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      displayToast("Logout failed. Please try again.");
+    }
   };
 
   useEffect(() => {
     if (!user) {
-      if (import.meta.env.PROD) {
-        fetch(
-          `${location.protocol}//${location.host}/` + "oauth2/userinfo"
-        ).then((value) => value.json().then((json) => setUser(json)));
-      }
+      // In development with VITE_FAKE_USER, use fake user
       if (import.meta.env.VITE_FAKE_USER) {
         setUser({
-          preferredUsername: "debug",
+          username: "debug",
           email: "debug@debug.debug",
-          groups: [],
+          groups: ["admin"],
         });
+        setAuthLoading(false);
+        return;
       }
+
+      // Fetch user info from backend
+      fetch("/auth/userinfo", {
+        credentials: "include",
+      })
+        .then((response) => {
+          if (response.status === 401) {
+            // Not authenticated, redirect to login
+            const currentPath = window.location.pathname + window.location.hash;
+            window.location.href = `/auth/login?redirect=${encodeURIComponent(currentPath)}`;
+            return null;
+          }
+          if (!response.ok) {
+            throw new Error("Failed to fetch user info");
+          }
+          return response.json();
+        })
+        .then((json) => {
+          if (json) {
+            setUser(json);
+          }
+        })
+        .catch((error) => {
+          console.error("Auth error:", error);
+          // Redirect to login on error
+          window.location.href = "/auth/login";
+        })
+        .finally(() => {
+          setAuthLoading(false);
+        });
+    } else {
+      setAuthLoading(false);
     }
-  }, [setUser, user]);
+  }, [user]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -48,7 +93,16 @@ export default function App(): React.ReactElement {
       displayToast("Session reloaded as you were timed out.");
       setSearchParams({});
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, displayToast]);
+
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center foreground">
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <GlobalContext.Provider
@@ -80,6 +134,18 @@ export default function App(): React.ReactElement {
         <LinkColor>
           <Link to="/new_players">New Players</Link>
         </LinkColor>
+        {user && (
+          <>
+            <span className="ml-auto text-gray-400">{user.username}</span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-red-400 hover:text-red-300 hover:underline"
+            >
+              Logout
+            </button>
+          </>
+        )}
       </div>
       <div className="w-full md:container md:mx-auto flex flex-col foreground rounded mt-5 p-5">
         <Outlet />

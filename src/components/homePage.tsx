@@ -15,7 +15,7 @@ export default function HomePage(): React.ReactElement {
       <div className="flex flex-col gap-3">
         <div className="flex flex-row justify-between">
           <div className="text-3xl underline text-center">[cmdb]</div>
-          {user && <div>{user.preferredUsername}</div>}
+          {user && <div>{user.username}</div>}
         </div>
 
         <div className="flex flex-col md:flex-row gap-3">
@@ -123,12 +123,12 @@ const LookupOption = (props: LookupProps) => {
           toggle={() => setValue(null)}
           className="md:w-11/12 md:h-11/12"
         >
-          {type == "lookup" && <Navigate to={`/user/${value}`} />}
-          {type == "discordId" && (
+          {type === "lookup" && <Navigate to={`/user/${value}`} />}
+          {type === "discordId" && (
             <LookupMenu discordId={value} close={close} />
           )}
-          {type == "cid" && <CidLookup initialCid={value} close={close} />}
-          {type == "ip" && <IpLookup initialIp={value} close={close} />}
+          {type === "cid" && <CidLookup initialCid={value} close={close} />}
+          {type === "ip" && <IpLookup initialIp={value} close={close} />}
         </Dialog>
       )}
     </>
