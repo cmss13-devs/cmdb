@@ -6,11 +6,11 @@ import { LookupMenu } from "./components/userLookup";
 import { Stickybans } from "./components/stickybans";
 import { Tickets } from "./components/tickets";
 import HomePage from "./components/homePage";
-import { createHashRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { WhitelistMenu } from "./components/whitelistPanel";
 import { NewPlayers } from "./components/newPlayers";
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
