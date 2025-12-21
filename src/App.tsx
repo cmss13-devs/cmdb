@@ -141,7 +141,7 @@ export default function App(): React.ReactElement {
           <>
             |
             <LinkColor>
-              <Link to="/authentik">Authentik</Link>
+              <Link to="/user_manager">User Manager</Link>
             </LinkColor>
           </>
         )}

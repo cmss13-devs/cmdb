@@ -143,7 +143,9 @@ export const AuthentikPanel: React.FC = () => {
       }
 
       global?.updateAndShowToast(
-        `Removed ${memberToRemove.ckey || memberToRemove.username} from ${selectedGroup}`
+        `Removed ${
+          memberToRemove.ckey || memberToRemove.username
+        } from ${selectedGroup}`
       );
       setShowRemoveDialog(false);
       setMemberToRemove(null);
@@ -171,7 +173,7 @@ export const AuthentikPanel: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold">Authentik Group Management</h1>
+      <h1 className="text-xl font-bold">User Manager</h1>
 
       {/* Group selector */}
       <div className="flex flex-row gap-2 items-center">

@@ -50,7 +50,7 @@ const router = createBrowserRouter([
         element: <NewPlayers />,
       },
       {
-        path: "/authentik",
+        path: "/user_manager",
         element: <AuthentikPanel />,
       },
     ],
