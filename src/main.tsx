@@ -9,6 +9,7 @@ import HomePage from "./components/homePage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { WhitelistMenu } from "./components/whitelistPanel";
 import { NewPlayers } from "./components/newPlayers";
+import { AuthentikPanel } from "./components/authentikPanel";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/new_players",
         element: <NewPlayers />,
+      },
+      {
+        path: "/authentik",
+        element: <AuthentikPanel />,
       },
     ],
   },

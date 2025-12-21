@@ -137,6 +137,14 @@ export default function App(): React.ReactElement {
         <LinkColor>
           <Link to="/new_players">New Players</Link>
         </LinkColor>
+        {user?.groups?.includes("management") && (
+          <>
+            |
+            <LinkColor>
+              <Link to="/authentik">Authentik</Link>
+            </LinkColor>
+          </>
+        )}
         {user && (
           <>
             <span className="ml-auto text-gray-400">{user.username}</span>
