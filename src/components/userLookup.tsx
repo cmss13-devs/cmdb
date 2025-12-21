@@ -294,6 +294,11 @@ const TimeBanButton = (props: { player: Player }) => {
   );
 };
 
+type VpnWhitelist = {
+  ckey: string;
+  adminCkey: string;
+};
+
 const UserDetailsModal = (props: { player: Player }) => {
   const { player } = props;
 
@@ -311,10 +316,24 @@ const UserDetailsModal = (props: { player: Player }) => {
 
   const [tickets, setViewTickets] = useState(false);
   const [playtime, setViewPlaytime] = useState(false);
+  const [vpnWhitelist, setVpnWhitelist] = useState<VpnWhitelist | null | undefined>(undefined);
 
   useEffect(() => {
     setViewTickets(false);
+    setVpnWhitelist(undefined);
   }, [player, setViewTickets]);
+
+  useEffect(() => {
+    if (vpnWhitelist === undefined) {
+      callApi(`/User/VpnWhitelist?ckey=${ckey}`).then((response) => {
+        if (response.status === 200) {
+          response.json().then((json) => setVpnWhitelist(json));
+        } else {
+          setVpnWhitelist(null);
+        }
+      });
+    }
+  }, [ckey, vpnWhitelist]);
 
   const potentialUser = useLoaderData() as string;
   const nav = useNavigate();
@@ -434,6 +453,12 @@ const UserDetailsModal = (props: { player: Player }) => {
               </div>
             </Dialog>
           )}
+          {"|"}
+          <VpnWhitelistToggle
+            ckey={ckey}
+            vpnWhitelist={vpnWhitelist}
+            setVpnWhitelist={setVpnWhitelist}
+          />
         </div>
       </div>
     </>
@@ -622,6 +647,91 @@ const UserPlaytime = (props: { id: number }) => {
           ))}
       </div>
     </div>
+  );
+};
+
+const VpnWhitelistToggle = (props: {
+  ckey: string;
+  vpnWhitelist: VpnWhitelist | null | undefined;
+  setVpnWhitelist: (value: VpnWhitelist | null | undefined) => void;
+}) => {
+  const { ckey, vpnWhitelist, setVpnWhitelist } = props;
+  const [loading, setLoading] = useState(false);
+  const [confirmAdd, setConfirmAdd] = useState(false);
+  const [confirmRemove, setConfirmRemove] = useState(false);
+  const global = useContext(GlobalContext);
+
+  const addVpnWhitelist = () => {
+    setLoading(true);
+    callApi(`/User/VpnWhitelist?ckey=${ckey}`, { method: "POST" }).then(
+      (response) => {
+        setLoading(false);
+        setConfirmAdd(false);
+        if (response.status === 201) {
+          global?.updateAndShowToast(`Added VPN whitelist for ${ckey}.`);
+          setVpnWhitelist(undefined); // Trigger refetch
+        } else {
+          global?.updateAndShowToast("Failed to add VPN whitelist.");
+        }
+      }
+    );
+  };
+
+  const removeVpnWhitelist = () => {
+    setLoading(true);
+    callApi(`/User/VpnWhitelist?ckey=${ckey}`, { method: "DELETE" }).then(
+      (response) => {
+        setLoading(false);
+        setConfirmRemove(false);
+        if (response.status === 200) {
+          global?.updateAndShowToast(`Removed VPN whitelist for ${ckey}.`);
+          setVpnWhitelist(null);
+        } else {
+          global?.updateAndShowToast("Failed to remove VPN whitelist.");
+        }
+      }
+    );
+  };
+
+  if (vpnWhitelist === undefined) {
+    return <span>Loading...</span>;
+  }
+
+  if (loading) {
+    return <span>Processing...</span>;
+  }
+
+  if (vpnWhitelist) {
+    return (
+      <span className="flex flex-row gap-1">
+        <span className="text-green-500">VPN Whitelisted</span>
+        <span>(by {vpnWhitelist.adminCkey})</span>
+        {"|"}
+        {!confirmRemove ? (
+          <LinkColor onClick={() => setConfirmRemove(true)}>
+            Remove VPN Whitelist
+          </LinkColor>
+        ) : (
+          <LinkColor onClick={() => removeVpnWhitelist()} className="text-red-500">
+            Confirm Remove
+          </LinkColor>
+        )}
+      </span>
+    );
+  }
+
+  return (
+    <>
+      {!confirmAdd ? (
+        <LinkColor onClick={() => setConfirmAdd(true)}>
+          Add VPN Whitelist
+        </LinkColor>
+      ) : (
+        <LinkColor onClick={() => addVpnWhitelist()} className="text-red-500">
+          Confirm Add
+        </LinkColor>
+      )}
+    </>
   );
 };
 

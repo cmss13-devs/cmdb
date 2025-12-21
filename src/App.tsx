@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, Outlet, useSearchParams } from "react-router-dom";
 import { GlobalContext, type User } from "./types/global";
 import { LinkColor } from "./components/link";
+import { apiPath } from "./helpers/api";
 
 export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>();
@@ -20,7 +21,7 @@ export default function App(): React.ReactElement {
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", {
+      await fetch(`${apiPath}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -46,14 +47,16 @@ export default function App(): React.ReactElement {
       }
 
       // Fetch user info from backend
-      fetch("/api/auth/userinfo", {
+      fetch(`${apiPath}/api/auth/userinfo`, {
         credentials: "include",
       })
         .then((response) => {
           if (response.status === 401) {
             // Not authenticated, redirect to login
             const currentPath = window.location.pathname + window.location.hash;
-            window.location.href = `/api/auth/login?redirect=${encodeURIComponent(currentPath)}`;
+            window.location.href = `/api/auth/login?redirect=${encodeURIComponent(
+              currentPath
+            )}`;
             return null;
           }
           if (!response.ok) {

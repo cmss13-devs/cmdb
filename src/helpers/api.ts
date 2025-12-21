@@ -1,9 +1,11 @@
+export const apiPath = import.meta.env.VITE_API_PATH || "/api";
+
 /**
  * Attempt to refresh the session token
  */
 const attemptRefresh = async (): Promise<boolean> => {
   try {
-    const refreshRes = await fetch("/api/auth/refresh", {
+    const refreshRes = await fetch(`${apiPath}/auth/refresh`, {
       method: "POST",
       credentials: "include",
     });
@@ -18,7 +20,7 @@ const attemptRefresh = async (): Promise<boolean> => {
  */
 const redirectToLogin = (): never => {
   const currentPath = window.location.pathname + window.location.hash;
-  window.location.href = `/api/auth/login?redirect=${encodeURIComponent(currentPath)}`;
+  window.location.href = `${apiPath}/auth/login?redirect=${encodeURIComponent(currentPath)}`;
   throw new Error("Session expired - redirecting to login");
 };
 
@@ -29,9 +31,9 @@ export const callApi = async (
   toCall: string,
   init?: RequestInit | undefined
 ): Promise<Response> => {
-  const response = await fetch(`/api${toCall}`, {
+  const response = await fetch(`${apiPath}${toCall}`, {
     ...init,
-    credentials: "include",
+    //    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -40,9 +42,9 @@ export const callApi = async (
 
     if (refreshed) {
       // Retry original request
-      return fetch(`/api${toCall}`, {
+      return fetch(`${apiPath}${toCall}`, {
         ...init,
-        credentials: "include",
+        //       credentials: "include",
       });
     }
 
