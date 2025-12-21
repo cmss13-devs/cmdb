@@ -47,7 +47,7 @@ export default function App(): React.ReactElement {
       }
 
       // Fetch user info from backend
-      fetch(`${apiPath}/api/auth/userinfo`, {
+      fetch(`${apiPath}/auth/userinfo`, {
         credentials: "include",
       })
         .then((response) => {
