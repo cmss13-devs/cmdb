@@ -33,7 +33,7 @@ export const callApi = async (
 ): Promise<Response> => {
   const response = await fetch(`${apiPath}${toCall}`, {
     ...init,
-    //    credentials: "include",
+    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -44,7 +44,7 @@ export const callApi = async (
       // Retry original request
       return fetch(`${apiPath}${toCall}`, {
         ...init,
-        //       credentials: "include",
+        credentials: "include",
       });
     }
 
