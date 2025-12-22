@@ -4,6 +4,7 @@ import { Link, Outlet, useSearchParams } from "react-router-dom";
 import { GlobalContext, type User } from "./types/global";
 import { LinkColor } from "./components/link";
 import { apiPath } from "./helpers/api";
+import { NameExpand } from "./components/nameExpand";
 
 export default function App(): React.ReactElement {
   const [toastMessage, showToastMessage] = useState<string | null>();
@@ -147,7 +148,9 @@ export default function App(): React.ReactElement {
         )}
         {user && (
           <>
-            <span className="ml-auto text-gray-400">{user.username}</span>
+            <span className="ml-auto text-gray-400">
+              {user.username} (<NameExpand name={user.ckey}></NameExpand>)
+            </span>
             <button
               type="button"
               onClick={handleLogout}
