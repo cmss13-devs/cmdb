@@ -8,6 +8,7 @@ import HomePage from "./components/homePage";
 import { NewPlayers } from "./components/newPlayers";
 import { Stickybans } from "./components/stickybans";
 import { Tickets } from "./components/tickets";
+import { TwoFactor } from "./components/twoFactor";
 import { LookupMenu } from "./components/userLookup";
 import { WhitelistMenu } from "./components/whitelistPanel";
 
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/user_manager",
         element: <AuthentikPanel />,
+      },
+      {
+        path: "/2fa",
+        element: <TwoFactor />,
       },
     ],
   },
