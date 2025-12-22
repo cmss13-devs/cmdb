@@ -4,24 +4,24 @@ import { CidLookup } from "./cidLookup";
 import { LinkColor } from "./link";
 
 type DetailedCidProps = {
-  cid: string;
+	cid: string;
 };
 
 export const DetailedCid: React.FC<DetailedCidProps> = (
-  props: DetailedCidProps
+	props: DetailedCidProps,
 ) => {
-  const [open, setOpen] = useState(false);
+	const [open, setOpen] = useState(false);
 
-  return (
-    <>
-      <LinkColor onClick={() => setOpen(true)} className="inline">
-        {props.cid}
-      </LinkColor>
-      {open && (
-        <Dialog open={open} toggle={() => setOpen(false)}>
-          <CidLookup initialCid={props.cid} />
-        </Dialog>
-      )}
-    </>
-  );
+	return (
+		<>
+			<LinkColor onClick={() => setOpen(true)} className="inline">
+				{props.cid}
+			</LinkColor>
+			{open && (
+				<Dialog open={open} toggle={() => setOpen(false)}>
+					<CidLookup initialCid={props.cid} />
+				</Dialog>
+			)}
+		</>
+	);
 };

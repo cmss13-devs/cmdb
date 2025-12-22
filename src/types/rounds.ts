@@ -1,3 +1,3 @@
 export type Round = {
-  id: number;
-}
+	id: number;
+};

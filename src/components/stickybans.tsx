@@ -4,19 +4,19 @@ import { StickybanModal } from "./stickybanModal";
 import { callApi } from "../helpers/api";
 
 export const Stickybans: React.FC<Record<string, never>> = () => {
-  const [stickybanData, setStickybanData] = useState<Stickyban[] | null>(null);
+	const [stickybanData, setStickybanData] = useState<Stickyban[] | null>(null);
 
-  useEffect(() => {
-    if (!stickybanData) {
-      callApi(`/Stickyban`).then((value) =>
-        value.json().then((json) => setStickybanData(json))
-      );
-    }
-  });
+	useEffect(() => {
+		if (!stickybanData) {
+			callApi(`/Stickyban`).then((value) =>
+				value.json().then((json) => setStickybanData(json)),
+			);
+		}
+	});
 
-  if (!stickybanData) {
-    return <div className="flex flex-row justify-center">Loading...</div>;
-  }
+	if (!stickybanData) {
+		return <div className="flex flex-row justify-center">Loading...</div>;
+	}
 
-  return <StickybanModal stickybans={stickybanData} />;
+	return <StickybanModal stickybans={stickybanData} />;
 };

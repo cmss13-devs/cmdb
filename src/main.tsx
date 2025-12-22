@@ -12,53 +12,53 @@ import { NewPlayers } from "./components/newPlayers";
 import { AuthentikPanel } from "./components/authentikPanel";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "",
-        element: <HomePage />,
-      },
-      {
-        path: "/ticket/:round?/:ticketNum?",
-        element: <Tickets />,
-        loader: ({ params }) => {
-          return {
-            round: params.round || "",
-            ticketNum: params.ticketNum || "",
-          };
-        },
-      },
-      {
-        path: "/sticky",
-        element: <Stickybans />,
-      },
-      {
-        path: "/user/:ckey?",
-        element: <LookupMenu />,
-        loader: ({ params }) => {
-          return params.ckey || "";
-        },
-      },
-      {
-        path: "/whitelists",
-        element: <WhitelistMenu />,
-      },
-      {
-        path: "/new_players",
-        element: <NewPlayers />,
-      },
-      {
-        path: "/user_manager",
-        element: <AuthentikPanel />,
-      },
-    ],
-  },
+	{
+		path: "/",
+		element: <App />,
+		children: [
+			{
+				path: "",
+				element: <HomePage />,
+			},
+			{
+				path: "/ticket/:round?/:ticketNum?",
+				element: <Tickets />,
+				loader: ({ params }) => {
+					return {
+						round: params.round || "",
+						ticketNum: params.ticketNum || "",
+					};
+				},
+			},
+			{
+				path: "/sticky",
+				element: <Stickybans />,
+			},
+			{
+				path: "/user/:ckey?",
+				element: <LookupMenu />,
+				loader: ({ params }) => {
+					return params.ckey || "";
+				},
+			},
+			{
+				path: "/whitelists",
+				element: <WhitelistMenu />,
+			},
+			{
+				path: "/new_players",
+				element: <NewPlayers />,
+			},
+			{
+				path: "/user_manager",
+				element: <AuthentikPanel />,
+			},
+		],
+	},
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+	<React.StrictMode>
+		<RouterProvider router={router} />
+	</React.StrictMode>,
 );
