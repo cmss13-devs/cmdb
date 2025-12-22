@@ -22,12 +22,7 @@ export default function App(): React.ReactElement {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${apiPath}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-      setUser(undefined);
-      window.location.href = "/";
+      window.location.href = `${apiPath}/auth/logout`;
     } catch (error) {
       console.error("Logout failed:", error);
       displayToast("Logout failed. Please try again.");
