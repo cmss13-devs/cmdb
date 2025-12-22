@@ -22,7 +22,7 @@ export default function App(): React.ReactElement {
 
   const handleLogout = async () => {
     try {
-      await fetch(`${apiPath}/api/auth/logout`, {
+      await fetch(`${apiPath}/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
