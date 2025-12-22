@@ -40,6 +40,7 @@ export default function App(): React.ReactElement {
       if (import.meta.env.VITE_FAKE_USER) {
         setUser({
           username: "debug",
+          ckey: "debug",
           email: "debug@debug.debug",
           groups: ["admin"],
         });
